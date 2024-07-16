@@ -1,4 +1,7 @@
 #include "context.h"
+#include "util.h"
+
+#include <stdio.h>
 
 int contextBuild(Context *ctx) {
     // Characterset of to define the codepoints to load
@@ -19,11 +22,16 @@ int contextBuild(Context *ctx) {
         "╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀\n"
         "αßΓπΣσµτΦΘΩδ∞φε∩\n"
         "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xA0";
+    
+    printf("Initializing window\n");
 
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
+   
 
     // Initialize the window
     InitWindow(BASE_WIDTH, BASE_HEIGHT, WINDOW_TITLE);
-    // Set the font to the context
+
+    SetWindowMinSize(320, 240);
     SetTargetFPS(60);
 
     // -------------------------------
