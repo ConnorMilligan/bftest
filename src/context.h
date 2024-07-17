@@ -3,11 +3,14 @@
 
 #include <raylib.h>
 
+#include "util.h"
+
 typedef struct {
     Font font;
+    u8 fontSize;
 } Context;
 
-int contextBuild(Context *ctx);
-int contextCleanup(Context *ctx);
+u8 contextBuild(Context *ctx);
+u8 contextCleanup(Context *ctx);
 
 #endif // CONTEXT_H

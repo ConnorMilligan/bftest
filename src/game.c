@@ -1,4 +1,6 @@
 #include "game.h"
+#include "menu.h"
+#include "text.h"
 #include "util.h"
 
 void gameRender(Context *ctx) {
@@ -20,7 +22,8 @@ void gameRender(Context *ctx) {
     "αßΓπΣσµτΦΘΩδ∞φε∩\n"
     "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xA0";
 
-    float scale = MIN((float)GetScreenWidth()/BASE_WIDTH, (float)GetScreenHeight()/BASE_HEIGHT);
+    f32 scale = MIN((float)GetScreenWidth()/BASE_WIDTH, (float)GetScreenHeight()/BASE_HEIGHT);
+    ctx->fontSize = 24*scale;
 
     BeginDrawing();
 
@@ -29,24 +32,12 @@ void gameRender(Context *ctx) {
     //DrawRectangle(20, 20, BASE_WIDTH-40-((float)BASE_WIDTH*scale), BASE_HEIGHT-40-((float)BASE_HEIGHT*scale), WHITE);
     //DrawRectangle(25, 25, BASE_WIDTH-50-((float)BASE_WIDTH*scale), BASE_HEIGHT-50-((float)BASE_HEIGHT*scale), BLACK);
 
-    // Draw borders
-    for (int i = 24*scale; i < GetScreenWidth()-(24*scale); i+=24*scale) {
-        DrawTextEx(ctx->font, "═", (Vector2){i*scale, 0}, 24*scale, 0, WHITE);
-        DrawTextEx(ctx->font, "═", (Vector2){i*scale, (BASE_HEIGHT-24)*scale}, 24*scale, 0, WHITE);
-    }
-    for (int i = 24*scale; i < GetScreenHeight()-(24*scale); i+=24*scale) {
-        DrawTextEx(ctx->font, "║", (Vector2){0, i*scale}, 24*scale, 0, WHITE);
-        DrawTextEx(ctx->font, "║", (Vector2){(BASE_WIDTH-24)*scale, i*scale}, 24*scale, 0, WHITE);
-    }
-    DrawTextEx(ctx->font, "╚", (Vector2){0, (BASE_HEIGHT-24)*scale}, 24*scale, 0, WHITE);
-    DrawTextEx(ctx->font, "╝", (Vector2){(BASE_WIDTH-24)*scale, (BASE_HEIGHT-24)*scale}, 24*scale, 0, WHITE);
-    DrawTextEx(ctx->font, "╔", (Vector2){0, 0}, 24*scale, 0, WHITE);
-    DrawTextEx(ctx->font, "╗", (Vector2){(BASE_WIDTH-24)*scale, 0}, 24*scale, 0, WHITE);
+    menuDrawBorder(ctx);
 
-    
-    DrawTextEx(ctx->font, "╔═╦═╗\n│", (Vector2){1200*scale, 40*scale}, 24*scale, 0, WHITE);
-    DrawTextEx(ctx->font, cp437, (Vector2){40*scale, 120*scale}, 24*scale, 0, WHITE);
-    DrawTextEx(ctx->font, "Hello world, this is a test", (Vector2){40, 40}, 24*scale, 0, WHITE);
+    textDrawString(ctx, "Hello world, this is a test", 1, 1, WHITE);
+    textDrawString(ctx, cp437, 1, 3, WHITE);
+    textDrawString(ctx, "╔═╦═╗\n│", 25, 5, RED);
+
 
     EndDrawing();
 }
