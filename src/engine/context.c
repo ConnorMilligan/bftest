@@ -54,6 +54,7 @@ u8 contextBuild(Context *ctx) {
 
     ctx->font = cp437Font;
     ctx->fontSize = 24;
+    ctx->gameState = MAIN_MENU;
 
     return 0;
 }

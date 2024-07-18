@@ -5,9 +5,15 @@
 
 #include "util.h"
 
+enum GameState {
+    MAIN_MENU,
+    GAME,
+};
+
 typedef struct {
     Font font;
     u8 fontSize;
+    enum GameState gameState;
 } Context;
 
 u8 contextBuild(Context *ctx);

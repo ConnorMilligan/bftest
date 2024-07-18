@@ -1,9 +1,30 @@
 #include "game.h"
 #include "menu.h"
+#include "screen.h"
 #include "text.h"
 #include "util.h"
 
+void testRender(Context *ctx);
+
 void gameRender(Context *ctx) {
+    BeginDrawing();
+
+    switch (ctx->gameState) {
+        case MAIN_MENU:
+            screenDrawMainMenu(ctx);
+            break;
+        case GAME:
+            testRender(ctx);
+            break;
+        
+        default:
+            break;
+    }
+
+    EndDrawing();
+}
+
+void testRender(Context *ctx) {
     const char *cp437 = 
     " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼\n"
     "►◄↕‼¶§▬↨↑↓→←∟↔▲▼\n"
@@ -25,7 +46,7 @@ void gameRender(Context *ctx) {
     f32 scale = MIN((float)GetScreenWidth()/BASE_WIDTH, (float)GetScreenHeight()/BASE_HEIGHT);
     ctx->fontSize = 24*scale;
 
-    BeginDrawing();
+
 
     ClearBackground(BLACK);
     SetTextLineSpacing(24*scale);
@@ -37,7 +58,4 @@ void gameRender(Context *ctx) {
     textDrawString(ctx, "Hello world, this is a test", 1, 1, WHITE);
     textDrawString(ctx, cp437, 1, 3, WHITE);
     textDrawString(ctx, "╔═╦═╗\n│", 25, 5, RED);
-
-
-    EndDrawing();
 }
