@@ -1,4 +1,5 @@
-#include "text.h"
+#include "engine.h"
+
 #include <math.h>
 
 u16 textGetRows(u8 fontSize) {

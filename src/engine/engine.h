@@ -1,0 +1,50 @@
+#ifndef ENGINE_H
+#define ENGINE_H
+
+#include "util.h"
+
+#include <raylib.h>
+
+// Defines
+#define WINDOW_TITLE "bftest"
+#define BASE_WIDTH 1280
+#define BASE_HEIGHT 720
+
+// Enums
+enum GameState {
+    MAIN_MENU,
+    GAME,
+};
+
+// Structs
+typedef struct {
+    Font font;
+    u8 fontSize;
+    enum GameState gameState;
+} Context;
+
+// // ENGINE
+// Context
+u8 contextBuild(Context *ctx);
+u8 contextCleanup(Context *ctx);
+
+// Game
+void gameRender(Context *ctx);
+u8 gameCleanup(Context *ctx);
+
+// // RENDERING
+// Screen
+void screenDrawMainMenu(Context *ctx);
+
+// Menu
+void menuDrawBorder(Context *ctx);
+
+// Text
+u16 textGetRows(u8 fontSize);
+u16 textGetCols(u8 fontSize);
+
+void textDrawString(Context *ctx, const char *str, u16 x, u16 y, Color color);
+
+
+
+#endif // CONTEXT_H

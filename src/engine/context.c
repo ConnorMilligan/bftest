@@ -1,6 +1,6 @@
-#include "context.h"
-#include "util.h"
+#include "engine.h"
 
+#include <raylib.h>
 #include <stdio.h>
 
 u8 contextBuild(Context *ctx) {
@@ -54,13 +54,12 @@ u8 contextBuild(Context *ctx) {
 
     ctx->font = cp437Font;
     ctx->fontSize = 24;
-    ctx->gameState = MAIN_MENU;
+    ctx->gameState = GAME;
 
     return 0;
 }
 
 u8 contextCleanup(Context *ctx) {
-    CloseWindow();
     UnloadFont(ctx->font);
 
     return 0;

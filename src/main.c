@@ -1,8 +1,6 @@
-#include <raylib.h>
 #include <stdio.h>
 
-#include "engine/context.h"
-#include "engine/game.h"
+#include "engine/engine.h"
 
 int main(int argc, char **argv) {
     Context ctx;

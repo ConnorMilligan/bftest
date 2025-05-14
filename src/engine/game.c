@@ -1,8 +1,4 @@
-#include "game.h"
-#include "menu.h"
-#include "screen.h"
-#include "text.h"
-#include "util.h"
+#include "engine.h"
 
 void testRender(Context *ctx);
 
@@ -22,6 +18,11 @@ void gameRender(Context *ctx) {
     }
 
     EndDrawing();
+}
+
+u8 gameCleanup(Context *ctx) {
+    CloseWindow();
+    return contextCleanup(ctx);
 }
 
 void testRender(Context *ctx) {

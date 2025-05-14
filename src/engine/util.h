@@ -2,10 +2,7 @@
 #define UTIL_H
 
 #include <stdint.h>
-
-#define WINDOW_TITLE "bftest"
-#define BASE_WIDTH 1920
-#define BASE_HEIGHT 1080
+#include <stddef.h>
 
 #define MAX(a, b) ((a)>(b)? (a) : (b))
 #define MIN(a, b) ((a)<(b)? (a) : (b))
