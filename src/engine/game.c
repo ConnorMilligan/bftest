@@ -1,8 +1,31 @@
 #include "engine.h"
 
+#include <stdio.h>
+#include <raylib.h>
+
 void testRender(Context *ctx);
 
+u8 gameInit(Context *ctx) {
+    printf("Initializing window\n");
+
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
+   
+    // Initialize the window
+    InitWindow(BASE_WIDTH, BASE_HEIGHT, WINDOW_TITLE);
+
+    SetWindowMinSize(320, 240);
+    SetTargetFPS(60);
+
+    return contextBuild(ctx);
+}
+
+
 void gameRender(Context *ctx) {
+    // Reset scaling if screen size changes
+    if (IsWindowResized()) {
+        screenProcessResize(ctx);
+    }
+
     BeginDrawing();
 
     switch (ctx->gameState) {
@@ -44,13 +67,9 @@ void testRender(Context *ctx) {
     "αßΓπΣσµτΦΘΩδ∞φε∩\n"
     "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xA0";
 
-    f32 scale = MIN((float)GetScreenWidth()/BASE_WIDTH, (float)GetScreenHeight()/BASE_HEIGHT);
-    ctx->fontSize = 24*scale;
-
-
-
+    
     ClearBackground(BLACK);
-    SetTextLineSpacing(24*scale);
+    SetTextLineSpacing(0);
     //DrawRectangle(20, 20, BASE_WIDTH-40-((float)BASE_WIDTH*scale), BASE_HEIGHT-40-((float)BASE_HEIGHT*scale), WHITE);
     //DrawRectangle(25, 25, BASE_WIDTH-50-((float)BASE_WIDTH*scale), BASE_HEIGHT-50-((float)BASE_HEIGHT*scale), BLACK);
 
@@ -59,4 +78,7 @@ void testRender(Context *ctx) {
     textDrawString(ctx, "Hello world, this is a test", 1, 1, WHITE);
     textDrawString(ctx, cp437, 1, 3, WHITE);
     textDrawString(ctx, "╔═╦═╗\n│", 25, 5, RED);
+    char fps[5];
+    snprintf(fps, 5, "%d", GetFPS());
+    textDrawString(ctx, fps, 25, 25, RED);
 }

@@ -5,7 +5,7 @@
 int main(int argc, char **argv) {
     Context ctx;
 
-    contextBuild(&ctx);
+    gameInit(&ctx);
 
     while (!WindowShouldClose()) {
         gameRender(&ctx);

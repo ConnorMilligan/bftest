@@ -22,17 +22,6 @@ u8 contextBuild(Context *ctx) {
         "╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀\n"
         "αßΓπΣσµτΦΘΩδ∞φε∩\n"
         "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xA0";
-    
-    printf("Initializing window\n");
-
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
-   
-
-    // Initialize the window
-    InitWindow(BASE_WIDTH, BASE_HEIGHT, WINDOW_TITLE);
-
-    SetWindowMinSize(320, 240);
-    SetTargetFPS(60);
 
     // -------------------------------
     // | Font loading
@@ -53,7 +42,7 @@ u8 contextBuild(Context *ctx) {
     // -------------------------------
 
     ctx->font = cp437Font;
-    ctx->fontSize = 24;
+    ctx->fontSize = FONT_SIZE_BASE;
     ctx->gameState = GAME;
 
     return 0;

@@ -7,8 +7,10 @@
 
 // Defines
 #define WINDOW_TITLE "bftest"
-#define BASE_WIDTH 1280
-#define BASE_HEIGHT 720
+#define BASE_WIDTH 640
+#define BASE_HEIGHT 480
+
+#define FONT_SIZE_BASE 12
 
 // Enums
 enum GameState {
@@ -29,12 +31,14 @@ u8 contextBuild(Context *ctx);
 u8 contextCleanup(Context *ctx);
 
 // Game
+u8 gameInit(Context *ctx);
 void gameRender(Context *ctx);
 u8 gameCleanup(Context *ctx);
 
 // // RENDERING
 // Screen
 void screenDrawMainMenu(Context *ctx);
+u8 screenProcessResize(Context *ctx);
 
 // Menu
 void menuDrawBorder(Context *ctx);
