@@ -75,10 +75,11 @@ void testRender(Context *ctx) {
 
     menuDrawBorder(ctx);
 
-    textDrawString(ctx, "Hello world, this is a test", 1, 1, WHITE);
+
+    textDrawString(ctx, "Hello world, this is a test.", 1, 1, WHITE);
     textDrawString(ctx, cp437, 1, 3, WHITE);
     textDrawString(ctx, "╔═╦═╗\n│", 25, 5, RED);
     char fps[5];
     snprintf(fps, 5, "%d", GetFPS());
-    textDrawString(ctx, fps, 25, 25, RED);
+    textDrawString(ctx, fps, textGetRows(ctx->fontSize)-3, 1, YELLOW);
 }

@@ -10,7 +10,7 @@
 #define BASE_WIDTH 640
 #define BASE_HEIGHT 480
 
-#define FONT_SIZE_BASE 12
+#define FONT_SIZE_BASE 16
 
 // Enums
 enum GameState {
