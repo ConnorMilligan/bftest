@@ -8,10 +8,11 @@ int main(int argc, char **argv) {
 
     gameInit(&ctx);
 
-    Texture2D hokkaido = LoadTexture("../res/hokkaido.png");
+    Texture2D hokkaido = LoadTexture("../res/hokkaido3.png");
     while (!WindowShouldClose()) {
         gameRender(&ctx);
-        DrawTextureEx(hokkaido, (Vector2) {300, 150}, 0, 4, BLUE);
+        //DrawTextureEx(hokkaido, (Vector2) {200, 100}, 0, 4, WHITE);
+        DrawTextureEx(hokkaido, (Vector2) {200, 100}, 0, 2, WHITE);
     }
     UnloadTexture(hokkaido);
 
