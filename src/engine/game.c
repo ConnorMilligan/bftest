@@ -6,16 +6,25 @@
 void testRender(Context *ctx);
 
 u8 gameInit(Context *ctx) {
-    printf("Initializing window\n");
+    printf("Starting initialization proceedure.\n");
+
+    if (!DirectoryExists("res/")) {
+        printf("Could not locate the resources directory (res/). Please make sure the res directory is in the same location as the executable.\n");
+        return 2;
+    }
+
+    printf("Initializing window.\n");
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
    
     // Initialize the window
     InitWindow(BASE_WIDTH, BASE_HEIGHT, WINDOW_TITLE);
 
+    //HideCursor();
     SetWindowMinSize(320, 240);
     SetTargetFPS(60);
 
+    printf("Building context.\n");
     return contextBuild(ctx);
 }
 

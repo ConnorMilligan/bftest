@@ -32,7 +32,7 @@ u8 contextBuild(Context *ctx) {
     u32 *codepoints = LoadCodepoints(cp437, &codepointsCount);
 
     // Load the font with the specified codepoints
-    Font cp437Font = LoadFontEx("../res/MxPlus_IBM_BIOS.ttf", 32, codepoints, codepointsCount);
+    Font cp437Font = LoadFontEx("res/MxPlus_IBM_BIOS.ttf", 32, codepoints, codepointsCount);
 
     // Unload the codepoints array
     UnloadCodepoints(codepoints);
