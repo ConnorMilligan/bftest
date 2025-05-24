@@ -4,6 +4,9 @@
 #include <stdio.h>
 
 u8 contextBuild(Context *ctx) {
+    Font fontJP, cp437Font;
+    u32 *codepoints, codepointsCount;
+
     // Characterset of to define the codepoints to load
     const char *cp437 = 
         " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼\n"
@@ -21,18 +24,34 @@ u8 contextBuild(Context *ctx) {
         "└┴┬├─┼╞╟╚╔╩╦╠═╬╧\n"
         "╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀\n"
         "αßΓπΣσµτΦΘΩδ∞φε∩\n"
-        "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xA0";
+        "あ≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xA0";
+    
+    const char *jp = 
+        "あいうえおかきくけこ"
+        "さしすせそたちつてと"
+        "なにぬねのはひふへほ"
+        "はひふへほまみむめも"
+        "らりるれろやゆよわを"
+        "ん札幌市北海道";
 
     // -------------------------------
     // | Font loading
     // -------------------------------
 
-    // Define an array of codepoints you want to load
-    u32 codepointsCount = 0;
-    u32 *codepoints = LoadCodepoints(cp437, &codepointsCount);
+
+    // Define an array of codepoints to load
+    codepointsCount = 0;
+    codepoints = LoadCodepoints(cp437, &codepointsCount);
 
     // Load the font with the specified codepoints
-    Font cp437Font = LoadFontEx("res/MxPlus_IBM_BIOS.ttf", 32, codepoints, codepointsCount);
+    cp437Font = LoadFontEx("res/fonts/mxplus/MxPlus_IBM_BIOS.ttf", 32, codepoints, codepointsCount);
+
+    // Same for JP font
+    codepointsCount = 0;
+    codepoints = LoadCodepoints(jp, &codepointsCount);
+
+    fontJP = LoadFontEx("res/fonts/bestten/BestTen-DOT.otf", 32, codepoints, codepointsCount);
+
 
     // Unload the codepoints array
     UnloadCodepoints(codepoints);
@@ -42,6 +61,7 @@ u8 contextBuild(Context *ctx) {
     // -------------------------------
 
     ctx->font = cp437Font;
+    ctx->fontJP = fontJP;
     ctx->fontSize = FONT_SIZE_BASE;
     ctx->gameState = GAME;
 
@@ -50,6 +70,7 @@ u8 contextBuild(Context *ctx) {
 
 u8 contextCleanup(Context *ctx) {
     UnloadFont(ctx->font);
+    UnloadFont(ctx->fontJP);
 
     return 0;
 }

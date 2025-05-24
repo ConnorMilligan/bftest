@@ -14,3 +14,8 @@ void textDrawString(Context *ctx, const char *str, u16 x, u16 y, Color color) {
     // Draw string
     DrawTextEx(ctx->font, str, (Vector2){x*ctx->fontSize, y*ctx->fontSize}, ctx->fontSize, 0, color);
 }
+
+void textDrawStringJP(Context *ctx, const char *str, u16 x, u16 y, Color color) {
+    // Draw string
+    DrawTextEx(ctx->fontJP, str, (Vector2){x*ctx->fontSize, y*ctx->fontSize}, ctx->fontSize, 0, color);
+}

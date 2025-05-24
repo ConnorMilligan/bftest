@@ -21,7 +21,9 @@ enum GameState {
 // Structs
 typedef struct {
     Font font;
+    Font fontJP;
     u8 fontSize;
+
     enum GameState gameState;
 } Context;
 
@@ -48,6 +50,7 @@ u16 textGetRows(u8 fontSize);
 u16 textGetCols(u8 fontSize);
 
 void textDrawString(Context *ctx, const char *str, u16 x, u16 y, Color color);
+void textDrawStringJP(Context *ctx, const char *str, u16 x, u16 y, Color color);
 
 
 

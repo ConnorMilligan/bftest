@@ -1,0 +1,12 @@
+subprefectures
+
+[OBJECT:SUBREGION]
+
+[SUBREGION:SORACHI]
+	[NAME_EN:Sorachi]
+    [NAME_JP:空知]
+    [POPULATION:338,485]
+    [AREA:5,791.19]
+    [CAPTIAL_EN:Iwamizawa]
+    [CAPTIAL_JP:岩見沢]
+    [ATLAS_INDEX:0]

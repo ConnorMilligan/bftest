@@ -86,7 +86,8 @@ void testRender(Context *ctx) {
 
 
     textDrawString(ctx, "Hello world, this is a test.", 1, 1, WHITE);
-    textDrawString(ctx, cp437, 1, 3, WHITE);
+    textDrawStringJP(ctx, "あいうえお、札幌市、北海道", 1, 2, WHITE);
+    textDrawString(ctx, cp437, 1, 4, WHITE);
     textDrawString(ctx, "╔═╦═╗\n│", 25, 5, RED);
     char fps[5];
     snprintf(fps, 5, "%d", GetFPS());
