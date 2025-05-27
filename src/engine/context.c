@@ -1,7 +1,6 @@
 #include "engine.h"
 
 #include <raylib.h>
-#include <stdio.h>
 
 u8 contextBuild(Context *ctx) {
     Font fontJP, cp437Font;
@@ -67,6 +66,8 @@ u8 contextBuild(Context *ctx) {
 
     if (!FileExists("res/fonts/mxplus/MxPlus_IBM_BIOS.ttf") || !FileExists("res/fonts/bestten/BestTen-DOT.otf"))
         return CONTEXT_FONT_MISSING;
+
+    dataInit(ctx);
 
     return CONTEXT_SUCCESS;
 }

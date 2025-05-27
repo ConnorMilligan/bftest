@@ -36,4 +36,24 @@ typedef size_t usize;
 #undef int32_t
 #undef int64_t
 
+// List
+typedef struct Node {
+    void  *data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    Node *tail;
+    unsigned int size;
+} List;
+
+void listInit(List *list);
+u8 listDestroy(List *list);
+u8 listPush(List *list, void *data);
+u8 listDelete(List *list, u32 index);
+Node* listPop(List *list);
+Node* listGet(List *list, u32 index);
+
+
 #endif // UTIL_H
