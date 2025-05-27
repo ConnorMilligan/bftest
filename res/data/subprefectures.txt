@@ -1,6 +1,6 @@
 subprefectures
 
-[OBJECT:SUBREGION]
+[DATA:SUBREGION]
 
 [SUBREGION:SORACHI]
 	[NAME_EN:Sorachi]

@@ -65,12 +65,15 @@ u8 contextBuild(Context *ctx) {
     ctx->fontSize = FONT_SIZE_BASE;
     ctx->gameState = GAME;
 
-    return 0;
+    if (!FileExists("res/fonts/mxplus/MxPlus_IBM_BIOS.ttf") || !FileExists("res/fonts/bestten/BestTen-DOT.otf"))
+        return CONTEXT_FONT_MISSING;
+
+    return CONTEXT_SUCCESS;
 }
 
 u8 contextCleanup(Context *ctx) {
     UnloadFont(ctx->font);
     UnloadFont(ctx->fontJP);
 
-    return 0;
+    return CONTEXT_SUCCESS;
 }

@@ -1,6 +1,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include "errors.h"
 #include "util.h"
 
 #include <raylib.h>
@@ -18,7 +19,7 @@ enum GameState {
     GAME,
 };
 
-// Structs
+// // Structs
 typedef struct {
     Font font;
     Font fontJP;
@@ -27,10 +28,24 @@ typedef struct {
     enum GameState gameState;
 } Context;
 
+// Data
+typedef struct {
+    char name[16];
+    char namejp[16];
+    char population[16];
+    char area[16];
+    char capital[16];
+    char capitaljp[16];
+    u8 atlasIndex;
+} Subprefecture;
+
 // // ENGINE
 // Context
 u8 contextBuild(Context *ctx);
 u8 contextCleanup(Context *ctx);
+
+// Data
+u8 dataInit(Context *ctx);
 
 // Game
 u8 gameInit(Context *ctx);

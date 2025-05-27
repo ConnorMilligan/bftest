@@ -9,16 +9,29 @@ int main(int argc, char **argv) {
 
     status = gameInit(&ctx);
 
-    if (status != 0) {
-        printf("The window was not able to initialize properly; aborting. Error code: %d\n", status);
-        return status;
+    switch (status) {
+        case GAME_FONT_MISSING:
+            printf("ERROR: Fonts were unable to be found; aborting.\n");
+            gameCleanup(&ctx);
+            return 1;
+            break;
+
+        case GAME_RES_MISSING:
+            printf("ERROR: Could not locate the resources directory; aborting.\n");
+            return 1;
+            break;
+            
+        default:
+            printf("Game initialization successful.\n");
+            break;
     }
+
 
     while (!WindowShouldClose()) {
         gameRender(&ctx);
     }
 
-    contextCleanup(&ctx);
+    gameCleanup(&ctx);
 
     return 0;
 }

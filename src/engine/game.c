@@ -9,8 +9,7 @@ u8 gameInit(Context *ctx) {
     printf("Starting initialization proceedure.\n");
 
     if (!DirectoryExists("res/")) {
-        printf("Could not locate the resources directory (res/). Please make sure the res directory is in the same location as the executable.\n");
-        return 2;
+        return GAME_RES_MISSING;
     }
 
     printf("Initializing window.\n");
