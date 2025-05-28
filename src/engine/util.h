@@ -36,24 +36,20 @@ typedef size_t usize;
 #undef int32_t
 #undef int64_t
 
-// List
-typedef struct Node {
-    void  *data;
-    struct Node *next;
-} Node;
+// Vector
+#define VECTOR_INIT_CAPACITY 4
 
 typedef struct {
-    Node *head;
-    Node *tail;
-    unsigned int size;
-} List;
+    void **items;
+    usize size;
+    usize capacity;
+} Vector;
 
-void listInit(List *list);
-u8 listDestroy(List *list);
-u8 listPush(List *list, void *data);
-u8 listDelete(List *list, usize index);
-Node* listPop(List *list);
-Node* listGet(List *list, usize index);
-
+u8 vectorInit(Vector *vec);
+u8 vectorPush(Vector *vec, void *item);
+void *vectorPop(Vector *vec);
+void *vectorGet(Vector *vec, usize index);
+u8 vectorDelete(Vector *vec, usize index);
+u8 vectorDestroy(Vector *vec);
 
 #endif // UTIL_H

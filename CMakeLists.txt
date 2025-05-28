@@ -45,21 +45,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:${PROJECT_NAME}>/res)
 
-# Enable testing
+# Testing
 enable_testing()
-
-# Build test executable
-add_executable(test_list tests/test_list.c src/engine/list.c)
-target_include_directories(test_list PRIVATE ${CMAKE_SOURCE_DIR}/src/engine)
-
-# Register each logical test separately
-add_test(NAME test_listPush COMMAND test_list listPush)
-add_test(NAME test_listPop  COMMAND test_list listPop)
-add_test(NAME test_listDelete      COMMAND test_list listDelete)
-add_test(NAME test_listGet_invalid COMMAND test_list listGet_invalid)
-add_test(NAME test_listPop_empty   COMMAND test_list listPop_empty)
-add_test(NAME test_listMultiplePushPop COMMAND test_list listMultiplePushPop)
-add_test(NAME test_listDelete_invalid  COMMAND test_list listDelete_invalid)
-add_test(NAME test_listDestroy_twice   COMMAND test_list listDestroy_twice)
-add_test(NAME test_listPush_null       COMMAND test_list listPush_null)
+add_executable(test_vector tests/test_vector.c src/engine/vector.c)
+add_test(NAME test_vector COMMAND test_vector)
 
