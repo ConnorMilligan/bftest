@@ -51,9 +51,9 @@ typedef struct {
 void listInit(List *list);
 u8 listDestroy(List *list);
 u8 listPush(List *list, void *data);
-u8 listDelete(List *list, u32 index);
+u8 listDelete(List *list, usize index);
 Node* listPop(List *list);
-Node* listGet(List *list, u32 index);
+Node* listGet(List *list, usize index);
 
 
 #endif // UTIL_H

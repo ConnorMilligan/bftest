@@ -1,4 +1,3 @@
-
 enum ErrorContext {
     CONTEXT_SUCCESS,
     CONTEXT_FONT_MISSING,
@@ -8,4 +7,12 @@ enum ErrorGame {
     GAME_SUCCESS,
     GAME_FONT_MISSING,
     GAME_RES_MISSING
+};
+
+enum ErrorList {
+    LIST_SUCCESS,
+    LIST_NOT_FOUND,
+    LIST_OUT_OF_BOUNDS,
+    LIST_MEMORY_ERROR,
+    LIST_NULL_POINTER,
 };
