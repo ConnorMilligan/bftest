@@ -24,6 +24,7 @@ u8 vectorInit(Vector *vec) {
     }
     
     vec->size = 0;
+    vec->initialized = 1; // sentinal value
     vec->capacity = VECTOR_INIT_CAPACITY;
     
     return VECTOR_SUCCESS;
@@ -32,6 +33,9 @@ u8 vectorInit(Vector *vec) {
 u8 vectorPush(Vector *vec, void *item) {
     if (vec == NULL) {
         return VECTOR_NULL_POINTER;
+    }
+    else if (vec->initialized != 1) {
+        return VECTOR_UNINITIALIZED;
     }
 
     // Check if we need to resize the vector
@@ -45,7 +49,10 @@ u8 vectorPush(Vector *vec, void *item) {
 
 u8 vectorDestroy(Vector *vec) {
     if (vec == NULL) {
-        return VECTOR_EMPTY;
+        return VECTOR_NULL_POINTER;
+    }
+    else if (vec->initialized != 1) {
+        return VECTOR_UNINITIALIZED;
     }
 
     // Free each item in the vector if it is not NULL

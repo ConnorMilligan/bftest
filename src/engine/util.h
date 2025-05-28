@@ -43,6 +43,7 @@ typedef struct {
     void **items;
     usize size;
     usize capacity;
+    u8 initialized;
 } Vector;
 
 u8 vectorInit(Vector *vec);

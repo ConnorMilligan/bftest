@@ -7,7 +7,7 @@
 
 static i8 alloc_count = 0;
 static i8 passedTests = 0;
-static const u8 totalTests = 5;
+static const u8 totalTests = 6;
 
 void *my_malloc(size_t size) {
     alloc_count++;
@@ -22,11 +22,26 @@ void my_free(void *ptr) {
 #define malloc(size) my_malloc(size)
 #define free(ptr) my_free(ptr)
 
+u8 testUninitializedVector() {
+    Vector vec;
+    u8 status;
+
+    printf("Test 1/%d: Uninitialized vector destroy.\n", totalTests);
+    // Not initializing the vector, so it should return VECTOR_UNINITIALIZED
+    status = vectorDestroy(&vec);
+    if (status != VECTOR_UNINITIALIZED) {
+        printf("FAIL: Expected VECTOR_UNINITIALIZED, got %d\n", status);
+        return 1;
+    }
+    printf("PASS: Uninitialized vector destroy correctly returned VECTOR_UNINITIALIZED.\n");
+    return 0;
+}
+
 u8 testInit() {
     Vector vec;
     u8 status;
 
-    printf("Test 1/%d: Vector initialization.\n", totalTests);
+    printf("Test 2/%d: Vector initialization.\n", totalTests);
     status = vectorInit(&vec);
     vectorDestroy(&vec);
     if (status != VECTOR_SUCCESS) {
@@ -41,7 +56,7 @@ u8 testNullPointerInit() {
     Vector *vec = NULL;
     u8 status;
 
-    printf("Test 2/%d: Null pointer initialization.\n", totalTests);
+    printf("Test 3/%d: Null pointer initialization.\n", totalTests);
     status = vectorInit(vec);
     if (status != VECTOR_NULL_POINTER) {
         printf("FAIL: Expected VECTOR_NULL_POINTER, got %d\n", status);
@@ -55,7 +70,8 @@ u8 testEmptyVectorDestroy() {
     Vector vec;
     u8 status;
 
-    printf("Test 3/%d: Destroy empty vector.\n", totalTests);
+    printf("Test 4/%d: Destroy empty vector.\n", totalTests);
+    status = vectorInit(&vec);
     status = vectorDestroy(&vec);
     if (status != VECTOR_SUCCESS) {
         printf("FAIL: Failed to destroy empty vector: status code %d\n", status);
@@ -69,7 +85,7 @@ u8 testPushItem() {
     Vector vec;
     u8 status;
 
-    printf("Test 4/%d: Push item to vector.\n", totalTests);
+    printf("Test 5/%d: Push item to vector.\n", totalTests);
     status = vectorInit(&vec);
     if (status != VECTOR_SUCCESS) {
         printf("FAIL: Failed to initialize vector: status code %d\n", status);
@@ -94,7 +110,6 @@ u8 testPushItem() {
         return 1;
     }
     printf("PASS: Item pushed to vector successfully!\n");
-    passedTests++;
     vectorDestroy(&vec);
     
     return 0;
@@ -113,13 +128,14 @@ u8 testMemoryLeak() {
 
 int main(int argc, char** argv) {
     printf("Running vector tests...\n");
-    if (!testInit()) return 1; else passedTests++;
-    if (!testNullPointerInit()) return 1; else passedTests++;
-    if (!testEmptyVectorDestroy()) return 1; else passedTests++;
-    if (!testPushItem()) return 1; else passedTests++;
+    if (testUninitializedVector()) return 1; else passedTests++;
+    if (testInit()) return 1; else passedTests++;
+    if (testNullPointerInit()) return 1; else passedTests++;
+    if (testEmptyVectorDestroy()) return 1; else passedTests++;
+    if (testPushItem()) return 1; else passedTests++;
 
 
-    if (!testMemoryLeak()) return 1; else passedTests++;
+    if (testMemoryLeak()) return 1; else passedTests++;
     
     printf("All tests completed.\n");
     printf("Tests passed: %d/%d; Percent passed: %d\n", passedTests, totalTests, (passedTests * 100) / totalTests);
