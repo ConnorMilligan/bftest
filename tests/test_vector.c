@@ -116,7 +116,7 @@ u8 testPushItem() {
 }
 
 u8 testMemoryLeak() {
-    printf("Test 99/%d: Memory leak check.\n", alloc_count);
+    printf("Test 99/%d: Memory leak check.\n", totalTests);
     if (alloc_count != 0) {
         printf("FAIL: Memory leak detected! Allocations not freed: Allocation net %d\n", alloc_count);
         return 1;
@@ -138,6 +138,6 @@ int main(int argc, char** argv) {
     if (testMemoryLeak()) return 1; else passedTests++;
     
     printf("All tests completed.\n");
-    printf("Tests passed: %d/%d; Percent passed: %d\n", passedTests, totalTests, (passedTests * 100) / totalTests);
+    printf("Tests passed: %d/%d; Percent passed: %d%\n", passedTests, totalTests, (passedTests * 100) / totalTests);
     return 0;
 }
