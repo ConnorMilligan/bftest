@@ -47,6 +47,15 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 # Testing
 enable_testing()
-add_executable(test_vector tests/test_vector.c src/engine/vector.c)
-add_test(NAME test_vector COMMAND test_vector)
 
+# Set sources without the main
+file(GLOB_RECURSE PROJECT_SOURCES "src/engine/*.c")
+
+add_executable(test_vector tests/test_vector.c src/engine/vector.c)
+add_executable(test_data tests/test_data.c ${PROJECT_SOURCES})
+target_compile_definitions(test_data PRIVATE TEST_MAIN)
+
+target_link_libraries(test_data raylib)
+
+add_test(NAME test_vector COMMAND test_vector)
+add_test(NAME test_data COMMAND test_data)
