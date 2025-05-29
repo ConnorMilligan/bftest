@@ -53,7 +53,7 @@ file(GLOB_RECURSE PROJECT_SOURCES "src/engine/*.c")
 
 add_executable(test_vector tests/test_vector.c src/engine/vector.c)
 add_executable(test_data tests/test_data.c ${PROJECT_SOURCES})
-target_compile_definitions(test_data PRIVATE TEST_MAIN)
+target_compile_definitions(test_data PRIVATE TEST_BUILD)
 
 target_link_libraries(test_data raylib)
 

@@ -3,7 +3,7 @@ subprefectures
 [DATA:SUBREGION]
 
 [SUBREGION:SORACHI]
-	[NAME_EN:Sorachi]
+    [NAME_EN:Sorachi]
     [NAME_JP:空知]
     [POPULATION:338,485]
     [AREA:5,791.19]

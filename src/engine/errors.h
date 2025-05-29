@@ -16,3 +16,10 @@ enum ErrorVector {
     VECTOR_INDEX_OUT_OF_BOUNDS,
     VECTOR_UNINITIALIZED,
 };
+
+enum ErrorData {
+    DATA_SUCCESS,
+    DATA_DIR_EMPTY,
+    DATA_FILE_NOT_FOUND,
+    DATA_INVALID_FORMAT,
+};

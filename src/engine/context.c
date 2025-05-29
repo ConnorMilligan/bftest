@@ -61,11 +61,11 @@ u8 contextBuild(Context *ctx) {
     ctx->gameState = GAME;
 
     // Load fonts if not in test mode
-    #ifndef TEST_MAIN
+#ifndef TEST_BUILD
     contextLoadFonts(ctx);
     if (!FileExists("res/fonts/mxplus/MxPlus_IBM_BIOS.ttf") || !FileExists("res/fonts/bestten/BestTen-DOT.otf"))
         return CONTEXT_FONT_MISSING;
-    #endif
+#endif
 
     dataInit(ctx);
 
@@ -74,10 +74,10 @@ u8 contextBuild(Context *ctx) {
 
 u8 contextCleanup(Context *ctx) {
     // Unload fonts if not in test mode
-    #ifndef TEST_MAIN
+#ifndef TEST_BUILD
     UnloadFont(ctx->font);
     UnloadFont(ctx->fontJP);
-    #endif
+#endif
 
     return CONTEXT_SUCCESS;
 }
