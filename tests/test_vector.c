@@ -6,7 +6,7 @@
 #include "../src/engine/errors.h"
 
 static i8 passedTests = 0;
-static const u8 totalTests = 9;
+static const u8 totalTests = 10;
 
 u8 testUninitializedVector() {
     Vector vec;
@@ -98,11 +98,59 @@ u8 testPushItem() {
     return 0;
 }
 
+u8 testSet() {
+    Vector vec;
+    u8 status;
+
+    printf("Test 6/%d: Set item in vector.\n", totalTests);
+    status = vectorInit(&vec);
+    if (status != VECTOR_SUCCESS) {
+        printf("FAIL: Failed to initialize vector: status code %d\n", status);
+        return 1;
+    }
+
+    // Push an item to set it later
+    int *item = malloc(sizeof(int));
+    *item = 42;
+    status = vectorPush(&vec, item);
+    
+    if (status != VECTOR_SUCCESS) {
+        printf("FAIL: Failed to push item to vector: status code %d\n", status);
+        vectorDestroy(&vec);
+        return 1;
+    }
+
+    int *newItem = malloc(sizeof(int));
+    *newItem = 84;
+    status = vectorSet(&vec, newItem, 0);
+    
+    if (status != VECTOR_SUCCESS) {
+        printf("FAIL: Failed to set item in vector: status code %d\n", status);
+        free(newItem); // Free the new item if it was allocated
+        vectorDestroy(&vec);
+        return 1;
+    }
+    
+    if (vec.size != 1 || *(int *)vec.items[0] != 84) {
+        printf("FAIL: Vector size or item mismatch after set.\n");
+        free(newItem); // Free the new item if it was allocated
+        vectorDestroy(&vec);
+        return 1;
+    }
+    
+    free(item); // Free the old item
+    free(newItem); // Free the new item
+    printf("PASS: Item set in vector successfully!\n");
+    vectorDestroy(&vec);
+    
+    return 0;
+}
+
 u8 testPop() {
     Vector vec;
     u8 status;
 
-    printf("Test 6/%d: Pop item from vector.\n", totalTests);
+    printf("Test 7/%d: Pop item from vector.\n", totalTests);
     status = vectorInit(&vec);
     if (status != VECTOR_SUCCESS) {
         printf("FAIL: Failed to initialize vector: status code %d\n", status);
@@ -146,7 +194,7 @@ u8 testResize() {
     u8 status;
     u8 oldCap = VECTOR_MIN_CAPACITY;
 
-    printf("Test 7/%d: Resize vector.\n", totalTests);
+    printf("Test 8/%d: Resize vector.\n", totalTests);
     status = vectorInit(&vec);
     if (status != VECTOR_SUCCESS) {
         printf("FAIL: Failed to initialize vector: status code %d\n", status);
@@ -209,7 +257,7 @@ u8 testGet() {
     u8 status;
     int *retrievedItem;
 
-    printf("Test 8/%d: Get item from vector.\n", totalTests);
+    printf("Test 9/%d: Get item from vector.\n", totalTests);
     status = vectorInit(&vec);
     if (status != VECTOR_SUCCESS) {
         printf("FAIL: Failed to initialize vector: status code %d\n", status);
@@ -266,7 +314,7 @@ u8 testDelete() {
     u8 status;
     int *deletedItem;
 
-    printf("Test 9/%d: Delete item from vector.\n", totalTests);
+    printf("Test 10/%d: Delete item from vector.\n", totalTests);
     status = vectorInit(&vec);
     if (status != VECTOR_SUCCESS) {
         printf("FAIL: Failed to initialize vector: status code %d\n", status);

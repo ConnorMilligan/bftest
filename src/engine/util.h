@@ -48,6 +48,7 @@ typedef struct {
 
 u8 vectorInit(Vector *vec);
 u8 vectorPush(Vector *vec, void *item);
+u8 vectorSet(Vector *vec, void *item, usize index);
 void *vectorPop(Vector *vec);
 void *vectorGet(Vector *vec, usize index);
 void *vectorDelete(Vector *vec, usize index);

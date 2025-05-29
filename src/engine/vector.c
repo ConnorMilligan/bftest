@@ -47,6 +47,24 @@ u8 vectorPush(Vector *vec, void *item) {
     return VECTOR_SUCCESS;
 }
 
+u8 vectorSet(Vector *vec, void *item, usize index) {
+    if (vec == NULL) {
+        return VECTOR_NULL_POINTER;
+    } else if (vec->initialized != 1) {
+        return VECTOR_UNINITIALIZED;
+    } else if (index >= vec->size) {
+        return VECTOR_INDEX_OUT_OF_BOUNDS;
+    }
+
+    // Free the existing item at the index if it exists
+    if (vec->items[index] != NULL) {
+        free(vec->items[index]);
+    }
+
+    vec->items[index] = item; // Set the new item
+    return VECTOR_SUCCESS;
+}
+
 void *vectorPop(Vector *vec) {
     if (vec == NULL) {
         return NULL;
