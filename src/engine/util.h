@@ -50,7 +50,7 @@ u8 vectorInit(Vector *vec);
 u8 vectorPush(Vector *vec, void *item);
 void *vectorPop(Vector *vec);
 void *vectorGet(Vector *vec, usize index);
-u8 vectorDelete(Vector *vec, usize index);
+void *vectorDelete(Vector *vec, usize index);
 u8 vectorDestroy(Vector *vec);
 
 #endif // UTIL_H

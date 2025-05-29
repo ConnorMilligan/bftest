@@ -62,8 +62,7 @@ void *vectorPop(Vector *vec) {
     void *item = vec->items[--vec->size];
     vec->items[vec->size] = NULL; // Clear the popped item
 
-    // Resize data if the size is below half the capacity
-    // do not resize below the minimum capacity
+    // Resize the vector if it is less than half full
     if (vec->size < vec->capacity / 2 && vec->capacity > VECTOR_MIN_CAPACITY) {
         if (vectorResize(vec, vec->capacity / 2) != VECTOR_SUCCESS) {
             return NULL;
@@ -71,6 +70,49 @@ void *vectorPop(Vector *vec) {
     }
     return item;
 }
+
+
+void *vectorGet(Vector *vec, usize index) {
+    if (vec == NULL) {
+        return NULL;
+    } else if (vec->initialized != 1) {
+        return NULL;
+    } else if (index >= vec->size) {
+        return NULL;
+    }
+
+
+    return vec->items[index];
+}
+
+void *vectorDelete(Vector *vec, usize index) {
+    if (vec == NULL) {
+        return NULL;
+    } else if (vec->initialized != 1) {
+        return NULL;
+    } else if (index >= vec->size) {
+        return NULL;
+    }
+
+    void *item = vec->items[index];
+
+    // Shift items to the left to fill the gap
+    for (usize i = index; i < vec->size - 1; i++) {
+        vec->items[i] = vec->items[i + 1];
+    }
+    
+    vec->items[--vec->size] = NULL; // Clear the last item
+
+    // Resize the vector if it is less than half full
+    if (vec->size < vec->capacity / 2 && vec->capacity > VECTOR_MIN_CAPACITY) {
+        if (vectorResize(vec, vec->capacity / 2) != VECTOR_SUCCESS) {
+            return NULL;
+        }
+    }
+
+    return item;
+}
+
 
 u8 vectorDestroy(Vector *vec) {
     if (vec == NULL) {
