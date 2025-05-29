@@ -37,7 +37,7 @@ typedef size_t usize;
 #undef int64_t
 
 // Vector
-#define VECTOR_INIT_CAPACITY 4
+#define VECTOR_MIN_CAPACITY 4
 
 typedef struct {
     void **items;

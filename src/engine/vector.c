@@ -18,14 +18,14 @@ u8 vectorInit(Vector *vec) {
         return VECTOR_NULL_POINTER;
     }
 
-    vec->items = malloc(VECTOR_INIT_CAPACITY * sizeof(void *));
+    vec->items = malloc(VECTOR_MIN_CAPACITY * sizeof(void *));
     if (vec->items == NULL) {
         return VECTOR_MEMORY_ALLOCATION;
     }
     
     vec->size = 0;
     vec->initialized = 1; // sentinal value
-    vec->capacity = VECTOR_INIT_CAPACITY;
+    vec->capacity = VECTOR_MIN_CAPACITY;
     
     return VECTOR_SUCCESS;
 }
@@ -45,6 +45,31 @@ u8 vectorPush(Vector *vec, void *item) {
         
     vec->items[vec->size++] = item;
     return VECTOR_SUCCESS;
+}
+
+void *vectorPop(Vector *vec) {
+    if (vec == NULL) {
+        return NULL;
+    }
+    else if (vec->initialized != 1) {
+        return NULL;
+    }
+
+    if (vec->size == 0) {
+        return NULL; // Nothing to pop
+    }
+
+    void *item = vec->items[--vec->size];
+    vec->items[vec->size] = NULL; // Clear the popped item
+
+    // Resize data if the size is below half the capacity
+    // do not resize below the minimum capacity
+    if (vec->size < vec->capacity / 2 && vec->capacity > VECTOR_MIN_CAPACITY) {
+        if (vectorResize(vec, vec->capacity / 2) != VECTOR_SUCCESS) {
+            return NULL;
+        }
+    }
+    return item;
 }
 
 u8 vectorDestroy(Vector *vec) {

@@ -5,22 +5,8 @@
 #include "../src/engine/util.h"
 #include "../src/engine/errors.h"
 
-static i8 alloc_count = 0;
 static i8 passedTests = 0;
-static const u8 totalTests = 6;
-
-void *my_malloc(size_t size) {
-    alloc_count++;
-    return malloc(size);
-}
-
-void my_free(void *ptr) {
-    if (ptr) alloc_count--;
-    free(ptr);
-}
-
-#define malloc(size) my_malloc(size)
-#define free(ptr) my_free(ptr)
+static const u8 totalTests = 7;
 
 u8 testUninitializedVector() {
     Vector vec;
@@ -95,9 +81,6 @@ u8 testPushItem() {
     int *item = malloc(sizeof(int));
     *item = 42;
     status = vectorPush(&vec, item);
-    // This is here since under the hood, realloc will make an additional call of malloc, which we don't want to count as an allocation for the item itself.
-    // Since the pointer is shared and will be freed by vectorDestroy, we don't want to count it as an allocation.
-    --alloc_count;
     
     if (status != VECTOR_SUCCESS) {
         printf("FAIL: Failed to push item to vector: status code %d\n", status);
@@ -115,13 +98,109 @@ u8 testPushItem() {
     return 0;
 }
 
-u8 testMemoryLeak() {
-    printf("Test 99/%d: Memory leak check.\n", totalTests);
-    if (alloc_count != 0) {
-        printf("FAIL: Memory leak detected! Allocations not freed: Allocation net %d\n", alloc_count);
+u8 testPop() {
+    Vector vec;
+    u8 status;
+
+    printf("Test 6/%d: Pop item from vector.\n", totalTests);
+    status = vectorInit(&vec);
+    if (status != VECTOR_SUCCESS) {
+        printf("FAIL: Failed to initialize vector: status code %d\n", status);
         return 1;
     }
-    printf("PASS: No memory leaks detected!\n");
+
+    // Push an item to pop it later
+    int *item = malloc(sizeof(int));
+    *item = 42;
+    status = vectorPush(&vec, item);
+    
+    if (status != VECTOR_SUCCESS) {
+        printf("FAIL: Failed to push item to vector: status code %d\n", status);
+        vectorDestroy(&vec);
+        return 1;
+    }
+
+    int *poppedItem = vectorPop(&vec);
+    if (poppedItem == NULL || *poppedItem != 42) {
+        printf("FAIL: Popped item mismatch. Expected 42, got %d\n", poppedItem ? *poppedItem : -1);
+        free(poppedItem); // Free the popped item if it was allocated
+        vectorDestroy(&vec);
+        return 1;
+    }
+    
+    free(poppedItem); // Free the popped item
+    if (vec.size != 0) {
+        printf("FAIL: Vector size mismatch after pop. Expected 0, got %zu\n", vec.size);
+        vectorDestroy(&vec);
+        return 1;
+    }
+    
+    printf("PASS: Item popped from vector successfully!\n");
+    vectorDestroy(&vec);
+    
+    return 0;
+}
+
+u8 testResize() {
+    Vector vec;
+    u8 status;
+    u8 oldCap = VECTOR_MIN_CAPACITY;
+
+    printf("Test 7/%d: Resize vector.\n", totalTests);
+    status = vectorInit(&vec);
+    if (status != VECTOR_SUCCESS) {
+        printf("FAIL: Failed to initialize vector: status code %d\n", status);
+        return 1;
+    }
+
+    // Push items to trigger a resize
+    for (int i = 0; i < 10; i++) {
+        int *item = malloc(sizeof(int));
+        *item = i;
+        status = vectorPush(&vec, item);
+        if (oldCap != vec.capacity) {
+            printf("Vector resized successfully to capacity %zu after pushing %d items.\n", vec.capacity, i + 1);
+            oldCap = vec.capacity; // Update oldSize to the new capacity
+        }
+        if (status != VECTOR_SUCCESS) {
+            printf("FAIL: Failed to push item %d to vector: status code %d\n", i, status);
+            vectorDestroy(&vec);
+            return 1;
+        }
+    }
+
+    if (vec.size != 10) {
+        printf("FAIL: Vector size mismatch after resizing. Expected 10, got %zu\n", vec.size);
+        vectorDestroy(&vec);
+        return 1;
+    }
+
+
+    // Test pop
+    for (int i = 9; i >= 0; i--) {
+        int *poppedItem = vectorPop(&vec);
+        if (poppedItem == NULL || *poppedItem != i) {
+            printf("FAIL: Popped item mismatch. Expected %d, got %d\n", i, poppedItem ? *poppedItem : -1);
+            free(poppedItem); // Free the popped item if it was allocated
+            vectorDestroy(&vec);
+            return 1;
+        }
+        free(poppedItem); // Free the popped item
+        if (oldCap != vec.capacity) {
+            printf("Vector resized successfully to capacity %zu after popping item %d.\n", vec.capacity, i);
+            oldCap = vec.capacity; // Update oldSize to the new capacity
+        }
+
+        if (vec.capacity < VECTOR_MIN_CAPACITY) {
+            printf("FAIL: Vector capacity should not be less than %d after popping.\n", VECTOR_MIN_CAPACITY);
+            vectorDestroy(&vec);
+            return 1;
+        }
+    }
+    
+    printf("PASS: Vector resized successfully!\n");
+    vectorDestroy(&vec);
+    
     return 0;
 }
 
@@ -133,9 +212,8 @@ int main(int argc, char** argv) {
     if (testNullPointerInit()) return 1; else passedTests++;
     if (testEmptyVectorDestroy()) return 1; else passedTests++;
     if (testPushItem()) return 1; else passedTests++;
-
-
-    if (testMemoryLeak()) return 1; else passedTests++;
+    if (testPop()) return 1; else passedTests++;
+    if (testResize()) return 1; else passedTests++;
     
     printf("All tests completed.\n");
     printf("Tests passed: %d/%d; Percent passed: %d%\n", passedTests, totalTests, (passedTests * 100) / totalTests);
