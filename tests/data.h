@@ -5,6 +5,7 @@
 
 u8 dataValidateLine(const char *line, u32 lineNum);
 u8 dataExtractKeyValue(const char *line, DataTuple keyValue);
+u8 dataLoadFile(const char *filename, char **data);
 
 
 #endif // DATA_H

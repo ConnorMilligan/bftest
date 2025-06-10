@@ -11,7 +11,8 @@ static const u8 totalTests = 2;
 u8 testLineValidation() {
     u8 status;
 
-    const char *validLine = "[key:value]";
+    const char *validLine1 = "[key:value]";
+    const char *validLine2 = ""; // Empty line
     const char *invalidLine1 = "key:value"; // Missing brackets
     const char *invalidLine2 = "[key:value"; // Missing closing bracket
     const char *invalidLine3 = "[keyvalue]"; // Missing colon
@@ -19,9 +20,15 @@ u8 testLineValidation() {
     const char *invalidLine5 = "]key:value]";
 
     printf("Test 1/%d: Validate lines.\n", totalTests);
-    status = dataValidateLine(validLine, 1);
+    status = dataValidateLine(validLine1, 1);
     if (status != DATA_SUCCESS) {
         printf("FAIL: Valid line failed validation: status code %d\n", status);
+        return 1;
+    }
+
+    status = dataValidateLine(validLine2, 1);
+    if (status != DATA_SUCCESS) {
+        printf("FAIL: Empty line failed validation: status code %d\n", status);
         return 1;
     }
 
@@ -59,12 +66,14 @@ u8 testLineValidation() {
     return 0;
 }
 
-u8 dataTestKeyValueExtraction() {
+u8 testKeyValueExtraction() {
     DataTuple keyValue;
     const char *line = "[key:value]";
     const char *lineUni = "[NAME_JP:空知]";
 
     u8 status = dataExtractKeyValue(line, keyValue);
+
+    printf("Test 2/%d: Extract key-value pairs from line.\n", totalTests);
 
     if (status != DATA_SUCCESS) {
         printf("FAIL: Key-value extraction failed: status code %d\n", status);
@@ -90,21 +99,43 @@ u8 dataTestKeyValueExtraction() {
     return 0;
 }
 
+u8 testLoadFile() {
+    u8 status;
+    const char *filename = "tests/res/test.txt";
+    char *data = NULL;
+
+    status = dataLoadFile(filename, &data);
+
+    printf("Test 3/%d: Load file '%s'.\n", totalTests, filename);
+
+    if (status != DATA_SUCCESS) {
+        printf("FAIL: Failed to load file '%s'.\n", filename);
+        return 1;
+    }
+    printf("PASS: File '%s' loaded successfully.\n", filename);
+
+    if (data == NULL || strlen(data) == 0) {
+        printf("FAIL: Loaded data is NULL or empty.\n");
+        return 1;
+    }
+
+    printf("PASS: Loaded data is not NULL or empty.\n");
+
+    free(data);
+    return 0;
+}
+
+
 int main(int argc, char** argv) {
     printf("Running context tests...\n");
     if (testLineValidation()) return 1; else passedTests++;
-    if (dataTestKeyValueExtraction()) return 1; else passedTests++;
+    if (testKeyValueExtraction()) return 1; else passedTests++;
+    if (testLoadFile()) return 1; else passedTests++;
 
     printf("All tests completed.\n");
     printf("Tests passed: %d/%d; Percent passed: %d%\n", passedTests, totalTests, (passedTests * 100) / totalTests);
 
 
-    Context ctx;
-
-    contextBuild(&ctx);
-
-
-    contextCleanup(&ctx);
 
     return 0;
 }

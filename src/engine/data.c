@@ -13,12 +13,15 @@
 #endif
 
 INTERNAL u8 dataValidateLine(const char *line, u32 lineNum) {
-    if (line == NULL || strlen(line) == 0) {
+    if (line == NULL) {
 #ifdef TEST_BUILD
-        fprintf(stderr, "ERROR: Line %d is NULL or empty.\n", lineNum);
+        fprintf(stderr, "ERROR: Line %d is NULL.\n", lineNum);
 #endif
         return DATA_DIR_EMPTY;
     }
+
+    if (strlen(line) == 0)
+        return DATA_SUCCESS; // Empty line is considered valid
 
     const char *openBracket = strchr(line, '[');
     const char *closeBracket = strrchr(line, ']');
@@ -52,6 +55,7 @@ INTERNAL u8 dataValidate(const char *data) {
     u32 count = 0;
     u32 lineCount = 0;
     u32 lineNum = 0;
+    u8 status;
 
     if (data == NULL || strlen(data) == 0) {
 #ifdef TEST_BUILD
@@ -64,8 +68,17 @@ INTERNAL u8 dataValidate(const char *data) {
         if (data[count] == '\n') {
             buffer[lineCount] = '\0'; // Null-terminate the buffer
 
-            printf("INFO: Line %d: %s\n", lineNum, buffer);
+            //printf("INFO: Line %d: %s\n", lineNum, buffer);
             memset(buffer, 0, sizeof(buffer));
+            status = dataValidateLine(buffer, lineNum);
+
+            if (status != DATA_SUCCESS) {
+#ifdef TEST_BUILD
+                fprintf(stderr, "ERROR: Line %d validation failed with status code %d.\n", lineNum, status);
+#endif
+                return status;
+            }
+            
 
             lineCount = 0;
             lineNum++;
@@ -110,24 +123,39 @@ INTERNAL u8 dataExtractKeyValue(const char *line, DataTuple keyValue) {
     return DATA_SUCCESS;
 }
 
-INTERNAL char *dataLoadFile(const char *filename) {
-    char *data = LoadFileText(filename);
+INTERNAL u8 dataLoadFile(const char *filename, char **data) {
+    *data = LoadFileText(filename);
 
-    if (data == NULL) {
+
+    if (*data == NULL) {
 #ifdef TEST_BUILD
         fprintf(stderr, "ERROR: Could not load file: %s\n", filename);
 #endif
-        return NULL;
+        return DATA_FILE_NOT_FOUND;
     }
 
     // Validate the loaded data
-    u8 validationStatus = dataValidate(data);
+    u8 validationStatus = dataValidate(*data);
     if (validationStatus != DATA_SUCCESS) {
-        free(data); // Free the data if validation fails
-        return NULL;
+        free(*data); // Free the data if validation fails
+        return validationStatus;
     }
 
-    return data;
+    return DATA_SUCCESS;
+}
+
+u8 dataPopulateVector(Vector *vec, const char *data) {
+    if (vec == NULL || data == NULL) {
+#ifdef TEST_BUILD
+        fprintf(stderr, "ERROR: Vector or data is NULL.\n");
+#endif
+        return DATA_INVALID_FORMAT;
+    }
+
+
+
+
+    return DATA_SUCCESS
 }
 
 u8 dataInit(Context *ctx) {
@@ -137,10 +165,14 @@ u8 dataInit(Context *ctx) {
 #endif
         return DATA_DIR_EMPTY;
     }
+    u8 status;
+    char *data = NULL;
+    
+    status = dataLoadFile("tests/res/test.txt", &data);
 
-    char *data = dataLoadFile("tests/res/test.txt");
 
-    if (data == NULL) {
+
+    if (status != DATA_SUCCESS) {
 #ifdef TEST_BUILD
         fprintf(stderr, "ERROR: Failed to load data file.\n");
 #endif
