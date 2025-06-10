@@ -12,6 +12,7 @@
 #define BASE_HEIGHT 480
 
 #define FONT_SIZE_BASE 16
+#define DATA_BUF_LEN 16
 
 // Enums
 enum GameState {
@@ -29,13 +30,16 @@ typedef struct {
 } Context;
 
 // Data
+
+typedef char DataTuple[2][DATA_BUF_LEN];
+
 typedef struct {
-    char name[16];
-    char namejp[16];
-    char population[16];
-    char area[16];
-    char capital[16];
-    char capitaljp[16];
+    char name[DATA_BUF_LEN];
+    char namejp[DATA_BUF_LEN];
+    char population[DATA_BUF_LEN];
+    char area[DATA_BUF_LEN];
+    char capital[DATA_BUF_LEN];
+    char capitaljp[DATA_BUF_LEN];
     u8 atlasIndex;
 } Subprefecture;
 
