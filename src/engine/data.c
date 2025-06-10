@@ -12,6 +12,16 @@
 #define INTERNAL static
 #endif
 
+enum DataTypes {
+    DATA_NONE,
+    DATA_SUBREGION
+};
+
+static const char *dataTypeNames[] = {
+    "",
+    "SUBREGION"
+};
+
 INTERNAL u8 dataValidateLine(const char *line, u32 lineNum) {
     if (line == NULL) {
 #ifdef TEST_BUILD
@@ -54,7 +64,7 @@ INTERNAL u8 dataValidate(const char *data) {
     char buffer[BUFFER_SIZE];
     u32 count = 0;
     u32 lineCount = 0;
-    u32 lineNum = 0;
+    u32 lineNum = 1;
     u8 status;
 
     if (data == NULL || strlen(data) == 0) {
@@ -82,6 +92,8 @@ INTERNAL u8 dataValidate(const char *data) {
 
             lineCount = 0;
             lineNum++;
+            count++;
+            continue;
         }
 
         buffer[lineCount] = data[count];
@@ -152,10 +164,62 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
         return DATA_INVALID_FORMAT;
     }
 
+    char buffer[BUFFER_SIZE];
+    u32 count = 0;
+    u32 lineCount = 0;
+    u32 lineNum = 1;
+    u8 status;
+    enum DataTypes dataType;
+    DataTuple keyValue;
 
+    if (data == NULL || strlen(data) == 0) {
+#ifdef TEST_BUILD
+        fprintf(stderr, "ERROR: Data is NULL or empty.\n");
+#endif
+        return DATA_DIR_EMPTY;
+    }
 
+    while (data[count] != '\0') {
+        char current = data[count];
 
-    return DATA_SUCCESS
+        if (current == '\n' || current == '\r') {
+            buffer[lineCount] = '\0';
+
+            printf("INFO: Line %d: %s\n", lineNum, buffer);
+
+            if (strlen(buffer) == 0 || buffer[0] == '\n' || buffer[0] == '\r') {
+                printf("EMPTY: Line %d is empty, skipping.\n", lineNum);
+                memset(buffer, 0, sizeof(buffer));
+                count++;
+                lineCount = 0;
+                lineNum++;
+                continue; // Skip empty lines
+            }
+
+            dataExtractKeyValue(buffer, keyValue);
+
+            if (strcmp(keyValue[0], "DATA") == 0) {
+                if (strcmp(keyValue[1], "SUBREGION") == 0) {
+                    dataType = DATA_SUBREGION;
+#ifdef TEST_BUILD
+                    printf("INFO: Data type set to %s.\n", dataTypeNames[dataType]);
+#endif
+                }
+            }
+
+            memset(buffer, 0, sizeof(buffer));
+            lineCount = 0;
+            lineNum++;
+            count++;
+            continue;
+        }
+
+        buffer[lineCount] = data[count];
+
+        lineCount++;
+        count++;
+    }
+    return DATA_SUCCESS;
 }
 
 u8 dataInit(Context *ctx) {
@@ -179,8 +243,5 @@ u8 dataInit(Context *ctx) {
         return DATA_FILE_NOT_FOUND;
     }
 
-    free(data); // Free the loaded data after use
-
-
-    return 0;
+    return DATA_SUCCESS;
 }

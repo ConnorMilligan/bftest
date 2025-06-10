@@ -6,7 +6,7 @@
 #include "data.h"
 
 static i8 passedTests = 0;
-static const u8 totalTests = 2;
+static const u8 totalTests = 4;
 
 u8 testLineValidation() {
     u8 status;
@@ -125,12 +125,51 @@ u8 testLoadFile() {
     return 0;
 }
 
+u8 testPopulateVector() {
+    Vector vec;
+    u8 status;
+    char *data;
+    
+    dataLoadFile("tests/res/test.txt", &data);
+
+    printf("Test 4/%d: Populate vector with data.\n", totalTests);
+    status = vectorInit(&vec);
+    if (status != VECTOR_SUCCESS) {
+        printf("FAIL: Failed to initialize vector: status code %d\n", status);
+        free(data);
+        return 1;
+    }
+
+    status = dataPopulateVector(&vec, data);
+    if (status != DATA_SUCCESS) {
+        printf("FAIL: Failed to populate vector with data: status code %d\n", status);
+        vectorDestroy(&vec);
+        free(data);
+        return 1;
+    }
+
+    if (vec.size == 0) {
+        printf("FAIL: Vector size is zero after population.\n");
+        vectorDestroy(&vec);
+        free(data);
+        return 1;
+    }
+
+    printf("PASS: Vector populated successfully with %zu items.\n", vec.size);
+
+    vectorDestroy(&vec);
+    free(data);
+    
+    return 0;
+}
+
 
 int main(int argc, char** argv) {
     printf("Running context tests...\n");
     if (testLineValidation()) return 1; else passedTests++;
     if (testKeyValueExtraction()) return 1; else passedTests++;
     if (testLoadFile()) return 1; else passedTests++;
+    if (testPopulateVector()) return 1; else passedTests++;
 
     printf("All tests completed.\n");
     printf("Tests passed: %d/%d; Percent passed: %d%\n", passedTests, totalTests, (passedTests * 100) / totalTests);
