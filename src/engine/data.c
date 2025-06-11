@@ -28,7 +28,7 @@ static const char *dataTypeNames[] = {
 static const char* dataFields[][MAX_DATA_FIELDS] = {
     {},
     {
-        "NAME",
+        "NAME_EN",
         "NAME_JP",
         "POPULATION",
         "AREA",
@@ -189,17 +189,25 @@ u8 dataLoadStructureFromTuples(Vector *vec, enum DataTypes type, DataTuple field
     }
 
     if (type == DATA_TYPE_SUBREGION) {
-        // Check if all fields are present
+
         for (usize i = 0; i < MAX_DATA_FIELDS; i++) {
-                // If any field is missing, return an error
+            printf("INFO: Field %zu: %s = %s\n", i, fields[i][0], fields[i][1]);
+        }
+
+        // check all required fields are present
+        for (usize i = 0; i < MAX_DATA_FIELDS; i++) {
+            if (fields[i][0][0] == 0) {
+                break; // Stop checking if we hit an empty field
+            }
+            if (strcmp(fields[i][0], dataFields[DATA_TYPE_SUBREGION][i]) != 0) {
 #ifdef TEST_BUILD
-                fprintf(stderr, "ERROR: Missing field %zu in subregion data.\n", i);
+                fprintf(stderr, "ERROR: Missing required field '%s' for subregion.\n", dataFields[DATA_TYPE_SUBREGION][i]);
 #endif
                 return DATA_INVALID_FORMAT;
-            
+            }
 
 #ifdef TEST_BUILD
-            printf("INFO: Field %zu: %s = %s\n", i, (char *) fields[i][0], (char *) fields[i][1]);
+            printf("INFO: Field %zu: %s = %s\n", i, fields[i][0], fields[i][1]);
 #endif
         }
 
@@ -248,6 +256,8 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
     DataTuple keyValue;
     DataTuple fields[MAX_DATA_FIELDS];
 
+    memset(fields, 0, sizeof(fields));
+
     if (data == NULL || strlen(data) == 0) {
 #ifdef TEST_BUILD
         fprintf(stderr, "ERROR: Data is NULL or empty.\n");
@@ -266,8 +276,6 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
             if (strlen(buffer) == 0 || buffer[0] == '\n' || buffer[0] == '\r') {
                 printf("EMPTY: Line %d is empty, skipping.\n", lineNum);
                 memset(buffer, 0, sizeof(buffer));
-
-                dataLoadStructureFromTuples(vec, dataType, fields);
 
                 count++;
                 lineCount = 0;
@@ -308,19 +316,26 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
                 }
 
                 else if (strcmp(keyValue[0], "NAME_EN") == 0) {
-                    memcpy(fields[0], keyValue, sizeof(DataTuple));
+                    strncpy(fields[0][0], keyValue[0], BUFFER_SIZE);
+                    strncpy(fields[0][1], keyValue[1], BUFFER_SIZE);
                 } else if (strcmp(keyValue[0], "NAME_JP") == 0) {
-                    memcpy(fields[1], keyValue, sizeof(DataTuple));
+                    strncpy(fields[1][0], keyValue[0], BUFFER_SIZE);
+                    strncpy(fields[1][1], keyValue[1], BUFFER_SIZE);
                 } else if (strcmp(keyValue[0], "POPULATION") == 0) {
-                    memcpy(fields[2], keyValue, sizeof(DataTuple));
+                    strncpy(fields[2][0], keyValue[0], BUFFER_SIZE);
+                    strncpy(fields[2][1], keyValue[1], BUFFER_SIZE);
                 } else if (strcmp(keyValue[0], "AREA") == 0) {
-                    memcpy(fields[3], keyValue, sizeof(DataTuple));
+                    strncpy(fields[3][0], keyValue[0], BUFFER_SIZE);
+                    strncpy(fields[3][1], keyValue[1], BUFFER_SIZE);
                 } else if (strcmp(keyValue[0], "CAPITAL_EN") == 0) {
-                    memcpy(fields[4], keyValue, sizeof(DataTuple));
+                    strncpy(fields[4][0], keyValue[0], BUFFER_SIZE);
+                    strncpy(fields[4][1], keyValue[1], BUFFER_SIZE);
                 } else if (strcmp(keyValue[0], "CAPITAL_JP") == 0) {
-                    memcpy(fields[5], keyValue, sizeof(DataTuple));
+                    strncpy(fields[5][0], keyValue[0], BUFFER_SIZE);
+                    strncpy(fields[5][1], keyValue[1], BUFFER_SIZE);
                 } else if (strcmp(keyValue[0], "ATLAS_INDEX") == 0) {
-                    memcpy(fields[6], keyValue, sizeof(DataTuple));
+                    strncpy(fields[6][0], keyValue[0], BUFFER_SIZE);
+                    strncpy(fields[6][1], keyValue[1], BUFFER_SIZE);
                 } else {
 #ifdef TEST_BUILD
                     fprintf(stderr, "ERROR: Unknown field '%s' in line %d.\n", keyValue[0], lineNum);
@@ -329,7 +344,7 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
                 }
             }
 
-            memset(buffer, 0, sizeof(buffer));
+            memset(buffer, 0, BUFFER_SIZE);
             lineCount = 0;
             lineNum++;
             count++;
@@ -341,6 +356,8 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
         lineCount++;
         count++;
     }
+
+    dataLoadStructureFromTuples(vec, dataType, fields);
     return DATA_SUCCESS;
 }
 
