@@ -1,4 +1,3 @@
-subprefectures
 
 [DATA:SUBREGION]
 
@@ -10,3 +9,12 @@ subprefectures
     [CAPITAL_EN:Iwamizawa]
     [CAPITAL_JP:岩見沢]
     [ATLAS_INDEX:0]
+
+[SUBREGION:ISHIKARI]
+    [NAME_EN:Ishikari]
+    [NAME_JP:石狩]
+    [POPULATION:2,324,878]
+    [AREA:3,539.86]
+    [CAPITAL_EN:Sapporo]
+    [CAPITAL_JP:札幌]
+    [ATLAS_INDEX:1]

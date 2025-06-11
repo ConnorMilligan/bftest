@@ -190,10 +190,6 @@ u8 dataLoadStructureFromTuples(Vector *vec, enum DataTypes type, DataTuple field
 
     if (type == DATA_TYPE_SUBREGION) {
 
-        for (usize i = 0; i < MAX_DATA_FIELDS; i++) {
-            printf("INFO: Field %zu: %s = %s\n", i, fields[i][0], fields[i][1]);
-        }
-
         // check all required fields are present
         for (usize i = 0; i < MAX_DATA_FIELDS; i++) {
             if (fields[i][0][0] == 0) {
@@ -309,8 +305,10 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
 
             // Load in subregion
             else if (dataType == DATA_TYPE_SUBREGION) {
+
+               
                 if (strcmp(keyValue[0], "SUBREGION") == 0) {
-#ifdef TEST_BUILD
+#ifdef TEST_BUILD 
                     printf("INFO: Loading subregion %s.\n", keyValue[1]);
 #endif
                 }
@@ -336,6 +334,16 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
                 } else if (strcmp(keyValue[0], "ATLAS_INDEX") == 0) {
                     strncpy(fields[6][0], keyValue[0], BUFFER_SIZE);
                     strncpy(fields[6][1], keyValue[1], BUFFER_SIZE);
+
+                    // final data loaded
+                    status = dataLoadStructureFromTuples(vec, dataType, fields);
+                    if (status != DATA_SUCCESS) {
+#ifdef TEST_BUILD
+                        fprintf(stderr, "ERROR: Failed to load data structure from tuples: status code %d.\n", status);
+#endif
+                        return status;
+                    }
+
                 } else {
 #ifdef TEST_BUILD
                     fprintf(stderr, "ERROR: Unknown field '%s' in line %d.\n", keyValue[0], lineNum);
@@ -357,7 +365,6 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
         count++;
     }
 
-    dataLoadStructureFromTuples(vec, dataType, fields);
     return DATA_SUCCESS;
 }
 
