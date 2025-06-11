@@ -32,9 +32,6 @@ typedef struct {
 } Context;
 
 // Data
-
-typedef char DataTuple[2][DATA_BUF_LEN];
-
 typedef struct {
     char name[DATA_BUF_LEN];
     char namejp[DATA_BUF_LEN];
