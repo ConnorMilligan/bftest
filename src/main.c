@@ -20,6 +20,18 @@ int main(int argc, char **argv) {
             printf("ERROR: Could not locate the resources directory; aborting.\n");
             return 1;
             break;
+
+        case CONTEXT_DATA_INIT_FAILED:
+            printf("ERROR: Data initialization failed; aborting.\n");
+            gameCleanup(&ctx);
+            return 1;
+            break;
+
+        case CONTEXT_VECTOR_INIT_FAILED:
+            printf("ERROR: Vector initialization failed; aborting.\n");
+            gameCleanup(&ctx);
+            return 1;
+            break;
             
         default:
             printf("Game initialization successful.\n");
@@ -29,9 +41,18 @@ int main(int argc, char **argv) {
 
     while (!WindowShouldClose()) {
         gameRender(&ctx);
+        // close the window if the user presses escape
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            break;
+        }
     }
 
-    gameCleanup(&ctx);
+    status = gameCleanup(&ctx);
+    if (status != CONTEXT_SUCCESS) {
+        printf("ERROR: Game cleanup failed with status code %d.\n", status);
+        return 1;
+    }
+    printf("INFO: Game cleanup successful.\n");
 
     return 0;
 }

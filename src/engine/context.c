@@ -55,6 +55,8 @@ static void contextLoadFonts(Context *ctx) {
 }
 
 u8 contextBuild(Context *ctx) {
+    u8 status;
+
     ctx->font = (Font){};
     ctx->fontJP = (Font){};
     ctx->fontSize = FONT_SIZE_BASE;
@@ -66,18 +68,32 @@ u8 contextBuild(Context *ctx) {
     if (!FileExists("res/fonts/mxplus/MxPlus_IBM_BIOS.ttf") || !FileExists("res/fonts/bestten/BestTen-DOT.otf"))
         return CONTEXT_FONT_MISSING;
 #endif
-
-    dataInit(ctx);
+    status = vectorInit(&ctx->subprefectures);
+    if (status != VECTOR_SUCCESS) {
+        return CONTEXT_VECTOR_INIT_FAILED;
+    }
+    
+    status = dataInit(ctx);
+    if (status != DATA_SUCCESS) {
+        return CONTEXT_DATA_INIT_FAILED;
+    }
 
     return CONTEXT_SUCCESS;
 }
 
 u8 contextCleanup(Context *ctx) {
+    u8 status;
     // Unload fonts if not in test mode
 #ifndef TEST_BUILD
     UnloadFont(ctx->font);
     UnloadFont(ctx->fontJP);
 #endif
+
+    // Cleanup the vector
+    status = vectorDestroy(&ctx->subprefectures);
+    if (status != VECTOR_SUCCESS) {
+        return CONTEXT_VECTOR_INIT_FAILED;
+    }
 
     return CONTEXT_SUCCESS;
 }

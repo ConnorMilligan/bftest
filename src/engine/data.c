@@ -270,7 +270,7 @@ u8 dataPopulateVector(Vector *vec, const char *data) {
             //printf("INFO: Line %d: %s\n", lineNum, buffer);
 
             if (strlen(buffer) == 0 || buffer[0] == '\n' || buffer[0] == '\r') {
-                printf("EMPTY: Line %d is empty, skipping.\n", lineNum);
+                //printf("EMPTY: Line %d is empty, skipping.\n", lineNum);
                 memset(buffer, 0, sizeof(buffer));
 
                 count++;
@@ -381,7 +381,6 @@ u8 dataInit(Context *ctx) {
     status = dataLoadFile("tests/res/test.txt", &data);
 
 
-
     if (status != DATA_SUCCESS) {
 #ifdef TEST_BUILD
         fprintf(stderr, "ERROR: Failed to load data file.\n");
@@ -389,5 +388,15 @@ u8 dataInit(Context *ctx) {
         return DATA_FILE_NOT_FOUND;
     }
 
+    status = dataPopulateVector(&ctx->subprefectures, data);
+    free(data); // Free the data after populating the vector
+    if (status != DATA_SUCCESS) {
+#ifdef TEST_BUILD
+        fprintf(stderr, "ERROR: Failed to populate vector with data: status code %d.\n", status);
+#endif
+        return status;
+    }
+
+    printf("INFO: Data initialized successfully with %zu subprefectures.\n", ctx->subprefectures.size);
     return DATA_SUCCESS;
 }
