@@ -378,7 +378,7 @@ u8 dataInit(Context *ctx) {
     u8 status;
     char *data = NULL;
     
-    status = dataLoadFile("tests/res/test.txt", &data);
+    status = dataLoadFile("res/data/subprefectures.txt", &data);
 
 
     if (status != DATA_SUCCESS) {
