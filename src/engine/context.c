@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include <raylib.h>
+#include <stdio.h>
 
 static void contextLoadFonts(Context *ctx) {
     Font fontJP, cp437Font;
@@ -52,6 +53,45 @@ static void contextLoadFonts(Context *ctx) {
     // Set the loaded fonts to the context
     ctx->font = cp437Font;
     ctx->fontJP = fontJP;
+
+}
+
+static u8 contextLoadTextures(Context *ctx) {
+    u8 status;
+    Texture2D texture;
+    FilePathList textureFiles;
+
+    textureFiles = LoadDirectoryFiles("res/textures");
+
+    if (textureFiles.count == 0) {
+        // No textures found
+        return TEXTURE_FILE_NOT_FOUND;
+    }
+
+    for (int i = 0; i < textureFiles.count; i++) {
+        // Load each texture and add it to the vector
+        texture = LoadTexture(textureFiles.paths[i]);
+        if (texture.id == 0) {
+            // Failed to load texture
+            UnloadDirectoryFiles(textureFiles);
+            return TEXTURE_FILE_NOT_FOUND;
+        }
+
+        status = vectorPush(&ctx->textures, &texture);
+        if (status != VECTOR_SUCCESS) {
+            UnloadTexture(texture);
+            UnloadDirectoryFiles(textureFiles);
+            return CONTEXT_VECTOR_INIT_FAILED;
+        }
+    }
+
+#ifdef TEST_BUILD
+    printf("INFO: Loaded %d textures from directory.\n", textureFiles.count);
+#endif
+
+    UnloadDirectoryFiles(textureFiles); // Unload the directory files after loading textures
+
+    return CONTEXT_SUCCESS;
 }
 
 u8 contextBuild(Context *ctx) {
@@ -72,10 +112,21 @@ u8 contextBuild(Context *ctx) {
     if (status != VECTOR_SUCCESS) {
         return CONTEXT_VECTOR_INIT_FAILED;
     }
+
+    status = vectorInit(&ctx->textures);
+    if (status != VECTOR_SUCCESS) {
+        return CONTEXT_VECTOR_INIT_FAILED;
+    }
     
     status = dataInit(ctx);
     if (status != DATA_SUCCESS) {
         return CONTEXT_DATA_INIT_FAILED;
+    }
+
+    // Load textures
+    status = contextLoadTextures(ctx);
+    if (status != TEXTURE_SUCCESS) {
+        return status; // Return the error code from texture loading
     }
 
     return CONTEXT_SUCCESS;
@@ -89,10 +140,15 @@ u8 contextCleanup(Context *ctx) {
     UnloadFont(ctx->fontJP);
 #endif
 
-    // Cleanup the vector
+    // Cleanup the vectors
     status = vectorDestroy(&ctx->subprefectures);
     if (status != VECTOR_SUCCESS) {
-        return CONTEXT_VECTOR_INIT_FAILED;
+        return VECTOR_DESTROY_FAILED;
+    }
+
+    status = vectorDestroy(&ctx->textures);
+    if (status != VECTOR_SUCCESS) {
+        return VECTOR_DESTROY_FAILED;
     }
 
     return CONTEXT_SUCCESS;

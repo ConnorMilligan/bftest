@@ -27,6 +27,7 @@ typedef struct {
     u8 fontSize;
 
     Vector subprefectures;
+    Vector textures;
 
     enum GameState gameState;
 } Context;
