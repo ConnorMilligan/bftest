@@ -4,7 +4,6 @@
 #include <raylib.h>
 
 static void testRender(Context *ctx);
-static void screenDrawGame(Context *ctx);
 
 u8 gameInit(Context *ctx) {
     printf("Starting initialization proceedure.\n");
@@ -95,24 +94,3 @@ static void testRender(Context *ctx) {
 }
 
 
-static void screenDrawGame(Context *ctx) {    
-    ClearBackground(BLACK);
-    SetTextLineSpacing(0);
-
-    menuDrawBorder(ctx);
-
-    // Draw the game content
-    for (int i = 0; i < ctx->subprefectures.size; i++) {
-        Subprefecture *subpref = vectorGet(&ctx->subprefectures, i);
-        // Here you would draw each subprefecture, for now we just print its name
-        textDrawString(ctx, subpref->name, 1, 4 + i, WHITE);
-    }
-
-
-    textDrawString(ctx, "Hello world, this is a test.", 1, 1, WHITE);
-    textDrawStringJP(ctx, "あいうえお、札幌市、北海道", 1, 2, WHITE);
-    textDrawString(ctx, "╔═╦═╗\n│", 25, 5, RED);
-    char fps[5];
-    snprintf(fps, 5, "%d", GetFPS());
-    textDrawString(ctx, fps, textGetRows(ctx->fontSize)-3, 1, YELLOW);
-}

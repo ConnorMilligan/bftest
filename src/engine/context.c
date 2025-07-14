@@ -32,7 +32,12 @@ static void contextLoadFonts(Context *ctx) {
         "なにぬねのはひふへほ"
         "はひふへほまみむめも"
         "らりるれろやゆよわを"
-        "ん、札幌市北海道";
+        "ん、札幌市北海道オホ"
+        "ーツク函館十勝内室蘭"
+        "帯広宗谷江差旭川札幌"
+        "知空石狩日高浦河渡島"
+        "檜山留萌稚網走釧路根"
+        "室倶安";
 
 
     codepointsCount = 0;
@@ -68,21 +73,29 @@ static u8 contextLoadTextures(Context *ctx) {
         return TEXTURE_FILE_NOT_FOUND;
     }
 
-    for (int i = 0; i < textureFiles.count; i++) {
-        // Load each texture and add it to the vector
-        texture = LoadTexture(textureFiles.paths[i]);
-        if (texture.id == 0) {
-            // Failed to load texture
-            UnloadDirectoryFiles(textureFiles);
-            return TEXTURE_FILE_NOT_FOUND;
+    for (int i = 0; i < MAX_TEXTURES; i++) {
+        if (i >= textureFiles.count) {
+            // load a default texture if there are fewer textures than MAX_TEXTURES
+            texture = LoadTexture("res/MP_hokkaido.png");
+            if (texture.id == 0) {
+                // Failed to load default texture
+                UnloadDirectoryFiles(textureFiles);
+                return TEXTURE_FILE_NOT_FOUND;
+            }
+            ctx->textures[i] = texture; // Store the default texture in the context
+        }
+        else {
+            // Load each texture and add it to the vector
+            texture = LoadTexture(textureFiles.paths[i]);
+            if (texture.id == 0) {
+                // Failed to load texture
+                UnloadDirectoryFiles(textureFiles);
+                return TEXTURE_FILE_NOT_FOUND;
+            }
+
+            ctx->textures[i] = texture; // Store the texture in the context
         }
 
-        status = vectorPush(&ctx->textures, &texture);
-        if (status != VECTOR_SUCCESS) {
-            UnloadTexture(texture);
-            UnloadDirectoryFiles(textureFiles);
-            return CONTEXT_VECTOR_INIT_FAILED;
-        }
     }
 
     printf("INFO: Loaded %d textures from directory.\n", textureFiles.count);
@@ -110,11 +123,6 @@ u8 contextBuild(Context *ctx) {
     if (status != VECTOR_SUCCESS) {
         return CONTEXT_VECTOR_INIT_FAILED;
     }
-
-    status = vectorInit(&ctx->textures);
-    if (status != VECTOR_SUCCESS) {
-        return CONTEXT_VECTOR_INIT_FAILED;
-    }
     
     status = dataInit(ctx);
     if (status != DATA_SUCCESS) {
@@ -128,10 +136,6 @@ u8 contextBuild(Context *ctx) {
     }
 
     printf("INFO: Context built successfully.\n");
-    for (int i = 0; i < ctx->textures.size; i++) {
-        Texture2D *texture = vectorGet(&ctx->textures, i);
-        printf("INFO: Loaded texture %d with ID %u\n", i, texture->id);
-    }
 
     return CONTEXT_SUCCESS;
 }
@@ -151,10 +155,12 @@ u8 contextCleanup(Context *ctx) {
     }
 
     // Unload all textures
-    for (int i = 0; i < ctx->textures.size; i++) {
-        Texture2D *texture = vectorGet(&ctx->textures, i);
-        UnloadTexture(*texture);
+    for (int i = 0; i < MAX_TEXTURES; i++) {
+        if (ctx->textures[i].id != 0) {
+            UnloadTexture(ctx->textures[i]);
+        }
     }
+
 
     return CONTEXT_SUCCESS;
 }

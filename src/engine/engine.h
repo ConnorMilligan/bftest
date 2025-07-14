@@ -13,6 +13,7 @@
 
 #define FONT_SIZE_BASE 16
 #define DATA_BUF_LEN 16
+#define MAX_TEXTURES 16
 
 // Enums
 enum GameState {
@@ -27,7 +28,8 @@ typedef struct {
     u8 fontSize;
 
     Vector subprefectures;
-    Vector textures;
+    
+    Texture2D textures[MAX_TEXTURES];
 
     enum GameState gameState;
 } Context;
@@ -59,6 +61,7 @@ u8 gameCleanup(Context *ctx);
 // // RENDERING
 // Screen
 void screenDrawMainMenu(Context *ctx);
+void screenDrawGame(Context *ctx);
 u8 screenProcessResize(Context *ctx);
 
 // Menu
