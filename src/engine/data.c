@@ -216,6 +216,16 @@ u8 dataLoadStructureFromTuples(Vector *vec, enum DataTypes type, DataTuple field
             return DATA_ALLOCATION_FAILED;
         }
 
+        // Fill the subregion structure with data
+        Subprefecture *subregion = (Subprefecture *)data;
+        strncpy(subregion->name, fields[0][1], DATA_BUF_LEN);
+        strncpy(subregion->namejp, fields[1][1], DATA_BUF_LEN);
+        strncpy(subregion->population, fields[2][1], DATA_BUF_LEN);
+        strncpy(subregion->area, fields[3][1], DATA_BUF_LEN);
+        strncpy(subregion->capital, fields[4][1], DATA_BUF_LEN);
+        strncpy(subregion->capitaljp, fields[5][1], DATA_BUF_LEN);
+        subregion->atlasIndex = (u8)atoi(fields[6][1]);
+
     }
     // Add the data to the vector
     u8 status = vectorPush(vec, data);

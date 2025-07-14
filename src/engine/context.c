@@ -85,13 +85,11 @@ static u8 contextLoadTextures(Context *ctx) {
         }
     }
 
-#ifdef TEST_BUILD
     printf("INFO: Loaded %d textures from directory.\n", textureFiles.count);
-#endif
 
     UnloadDirectoryFiles(textureFiles); // Unload the directory files after loading textures
 
-    return CONTEXT_SUCCESS;
+    return TEXTURE_SUCCESS;
 }
 
 u8 contextBuild(Context *ctx) {
@@ -129,6 +127,12 @@ u8 contextBuild(Context *ctx) {
         return status; // Return the error code from texture loading
     }
 
+    printf("INFO: Context built successfully.\n");
+    for (int i = 0; i < ctx->textures.size; i++) {
+        Texture2D *texture = vectorGet(&ctx->textures, i);
+        printf("INFO: Loaded texture %d with ID %u\n", i, texture->id);
+    }
+
     return CONTEXT_SUCCESS;
 }
 
@@ -146,9 +150,10 @@ u8 contextCleanup(Context *ctx) {
         return VECTOR_DESTROY_FAILED;
     }
 
-    status = vectorDestroy(&ctx->textures);
-    if (status != VECTOR_SUCCESS) {
-        return VECTOR_DESTROY_FAILED;
+    // Unload all textures
+    for (int i = 0; i < ctx->textures.size; i++) {
+        Texture2D *texture = vectorGet(&ctx->textures, i);
+        UnloadTexture(*texture);
     }
 
     return CONTEXT_SUCCESS;
