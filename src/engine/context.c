@@ -24,7 +24,7 @@ static void contextLoadFonts(Context *ctx) {
         "└┴┬├─┼╞╟╚╔╩╦╠═╬╧\n"
         "╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀\n"
         "αßΓπΣσµτΦΘΩδ∞φε∩\n"
-        "あ≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xA0";
+        "あ≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ō\xA0";
     
     const char *jp = 
         "あいうえおかきくけこ"
@@ -112,6 +112,7 @@ u8 contextBuild(Context *ctx) {
     ctx->fontJP = (Font){};
     ctx->fontSize = FONT_SIZE_BASE;
     ctx->gameState = GAME;
+    ctx->menuSel = 0;
 
     // Load fonts if not in test mode
 #ifndef TEST_BUILD

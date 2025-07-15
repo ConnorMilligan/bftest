@@ -26,6 +26,7 @@ typedef struct {
     Font font;
     Font fontJP;
     u8 fontSize;
+    u8 menuSel;
 
     Vector subprefectures;
     
@@ -56,6 +57,7 @@ u8 dataInit(Context *ctx);
 // Game
 u8 gameInit(Context *ctx);
 void gameRender(Context *ctx);
+void gameInput(Context *ctx);
 u8 gameCleanup(Context *ctx);
 
 // // RENDERING
@@ -66,6 +68,7 @@ u8 screenProcessResize(Context *ctx);
 
 // Menu
 void menuDrawBorder(Context *ctx);
+void menuDrawSPSel(Context *ctx);
 
 // Text
 u16 textGetRows(u8 fontSize);

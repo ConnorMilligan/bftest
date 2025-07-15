@@ -41,6 +41,8 @@ int main(int argc, char **argv) {
 
     while (!WindowShouldClose()) {
         gameRender(&ctx);
+        gameInput(&ctx);
+        
         // close the window if the user presses escape
         if (IsKeyPressed(KEY_ESCAPE)) {
             break;

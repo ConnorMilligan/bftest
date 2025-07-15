@@ -51,6 +51,17 @@ void gameRender(Context *ctx) {
     EndDrawing();
 }
 
+void gameInput(Context *ctx) {
+    switch (ctx->gameState) {
+        case GAME:
+            if (IsKeyPressed(KEY_UP)) {
+                ctx->menuSel = (ctx->menuSel > 0) ? ctx->menuSel - 1 : ctx->subprefectures.size - 1;
+            } else if (IsKeyPressed(KEY_DOWN)) {
+                ctx->menuSel = (ctx->menuSel < ctx->subprefectures.size - 1) ? ctx->menuSel + 1 : 0;
+            } 
+    }
+}
+
 u8 gameCleanup(Context *ctx) {
     CloseWindow();
     return contextCleanup(ctx);
