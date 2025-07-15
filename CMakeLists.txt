@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(bftest)
+project(hokkmap)
 
 # Set normal compiler flags
 set(CMAKE_C_STANDARD 11)
