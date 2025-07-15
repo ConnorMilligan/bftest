@@ -1,7 +1,10 @@
 #include "engine.h"
 
 #include <raylib.h>
+#include <regex.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 
 static void contextLoadFonts(Context *ctx) {
     Font fontJP, cp437Font;
@@ -65,42 +68,76 @@ static u8 contextLoadTextures(Context *ctx) {
     u8 status;
     Texture2D texture;
     FilePathList textureFiles;
+    regex_t regex;
+    regmatch_t matches[2];
+    char pattern[] = "MSP_([0-9]+)_.+\\.png";
+
+    // Track which texture indices have been filled
+    bool filled[MAX_TEXTURES] = {false};
+    bool extraTextureLoaded = false;
 
     textureFiles = LoadDirectoryFiles("res/textures");
 
     if (textureFiles.count == 0) {
-        // No textures found
         return TEXTURE_FILE_NOT_FOUND;
     }
 
-    for (int i = 0; i < MAX_TEXTURES; i++) {
-        if (i >= textureFiles.count) {
-            // load a default texture if there are fewer textures than MAX_TEXTURES
-            texture = LoadTexture("res/MP_hokkaido.png");
-            if (texture.id == 0) {
-                // Failed to load default texture
-                UnloadDirectoryFiles(textureFiles);
-                return TEXTURE_FILE_NOT_FOUND;
-            }
-            ctx->textures[i] = texture; // Store the default texture in the context
-        }
-        else {
-            // Load each texture and add it to the vector
-            texture = LoadTexture(textureFiles.paths[i]);
-            if (texture.id == 0) {
-                // Failed to load texture
-                UnloadDirectoryFiles(textureFiles);
-                return TEXTURE_FILE_NOT_FOUND;
-            }
-
-            ctx->textures[i] = texture; // Store the texture in the context
-        }
-
+    // Compile regex
+    if (regcomp(&regex, pattern, REG_EXTENDED)) {
+        return TEXTURE_FILE_NOT_FOUND;
     }
 
-    printf("INFO: Loaded %d textures from directory.\n", textureFiles.count);
+    for (int f = 0; f < textureFiles.count; f++) {
+        const char *filename = GetFileName(textureFiles.paths[f]);
 
-    UnloadDirectoryFiles(textureFiles); // Unload the directory files after loading textures
+        if (regexec(&regex, filename, 2, matches, 0) == 0) {
+            // Extract index from match
+            int start = matches[1].rm_so;
+            int end = matches[1].rm_eo;
+            char indexStr[8];
+            snprintf(indexStr, end - start + 1, "%.*s", end - start, filename + start);
+            int index = atoi(indexStr);
+
+            if (index >= 0 && index < MAX_TEXTURES) {
+                texture = LoadTexture(textureFiles.paths[f]);
+                if (texture.id == 0) {
+                    regfree(&regex);
+                    UnloadDirectoryFiles(textureFiles);
+                    return TEXTURE_FILE_NOT_FOUND;
+                }
+                ctx->textures[index] = texture;
+                filled[index] = true;
+            }
+        } else {
+            // Non-matching filename → load to final slot
+            if (!extraTextureLoaded) {
+                texture = LoadTexture(textureFiles.paths[f]);
+                if (texture.id == 0) {
+                    regfree(&regex);
+                    UnloadDirectoryFiles(textureFiles);
+                    return TEXTURE_FILE_NOT_FOUND;
+                }
+                ctx->textures[MAX_TEXTURES - 1] = texture;
+                filled[MAX_TEXTURES - 1] = true;
+                extraTextureLoaded = true;
+            }
+        }
+    }
+
+    regfree(&regex);
+    UnloadDirectoryFiles(textureFiles);
+
+    // Load default for any unfilled slots
+    for (int i = 0; i < MAX_TEXTURES; i++) {
+        if (!filled[i]) {
+            texture = LoadTexture("res/MP_hokkaido.png");
+            if (texture.id == 0) {
+                return TEXTURE_FILE_NOT_FOUND;
+            }
+            ctx->textures[i] = texture;
+        }
+    }
+
 
     return TEXTURE_SUCCESS;
 }
