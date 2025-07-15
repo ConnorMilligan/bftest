@@ -27,9 +27,12 @@ void screenDrawGame(Context *ctx) {
 
     // Draw the game content
     for (int i = 0; i < MAX_TEXTURES; i++) {
-        if (ctx->textures[i].id != 0)
+        if (ctx->textures[i].id != 0 && i != ctx->menuSel)
             DrawTextureEx(ctx->textures[i], (Vector2) {(GetScreenWidth()/2)-(100*2.4*ctx->textureScale), 10}, 0, 2.4*ctx->textureScale, WHITE);
     }
+
+    DrawTextureEx(ctx->textures[ctx->menuSel], (Vector2) {(GetScreenWidth()/2)-(100*2.4*ctx->textureScale), 10}, 0, 2.4*ctx->textureScale, YELLOW);
+
 
     char fps[5];
     snprintf(fps, 5, "%d", GetFPS());

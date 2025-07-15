@@ -126,3 +126,4 @@
     [CAPITAL_EN:Nemuro]
     [CAPITAL_JP:根室]
     [ATLAS_INDEX:13]
+    

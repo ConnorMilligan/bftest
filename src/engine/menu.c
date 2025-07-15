@@ -10,7 +10,7 @@ void menuDrawBorder(Context *ctx) {
 
     for (u8 i = 1; i < textGetCols(ctx->fontSize)-1; i++) {
         if (i != 20) textDrawString(ctx, "║", 0, i, WHITE);
-        if (i == 13) continue; // Skip the input menu vertical line
+        if (i == 12) continue; // Skip the input menu vertical line
         textDrawString(ctx, "║", textGetRows(ctx->fontSize)-1, i, WHITE);
     }
 
@@ -21,22 +21,22 @@ void menuDrawBorder(Context *ctx) {
 
     // Input menu corners
     for (u8 i = 28; i < textGetRows(ctx->fontSize)-1; i++) {
-        textDrawString(ctx, "═", i, 13, WHITE);
+        textDrawString(ctx, "═", i, 12, WHITE);
     }
-    for (u8 i = 14; i < textGetCols(ctx->fontSize)-1; i++) {
+    for (u8 i = 13; i < textGetCols(ctx->fontSize)-1; i++) {
         if (i == 20) continue; // Skip the input menu vertical line
         textDrawString(ctx, "║", 27, i, WHITE);
     }
 
-    textDrawString(ctx, "╔", 27, 13, WHITE);
-    textDrawString(ctx, "╣", textGetRows(ctx->fontSize)-1, 13, WHITE);
+    textDrawString(ctx, "╔", 27, 12, WHITE);
+    textDrawString(ctx, "╣", textGetRows(ctx->fontSize)-1, 12, WHITE);
     textDrawString(ctx, "╩", 27, textGetCols(ctx->fontSize)-1, WHITE);
 
 
 }
 
 void menuDrawSPrefSel(Context *ctx) {
-    u8 x = 29, y = 15;
+    u8 x = 29, y = 14;
 
     for (int i = 0; i < ctx->subprefectures.size; i++) {
         Subprefecture *subpref = vectorGet(&ctx->subprefectures, i);
