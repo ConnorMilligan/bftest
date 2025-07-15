@@ -37,7 +37,7 @@ static void contextLoadFonts(Context *ctx) {
         "帯広宗谷江差旭川札幌"
         "知空石狩日高浦河渡島"
         "檜山留萌稚網走釧路根"
-        "室倶安";
+        "室倶安岩見沢後志上";
 
 
     codepointsCount = 0;
@@ -111,6 +111,7 @@ u8 contextBuild(Context *ctx) {
     ctx->font = (Font){};
     ctx->fontJP = (Font){};
     ctx->fontSize = FONT_SIZE_BASE;
+    ctx->textureScale = TEXTURE_BASE_SIZE;
     ctx->gameState = GAME;
     ctx->menuSel = 0;
 

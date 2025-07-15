@@ -12,6 +12,7 @@
 #define BASE_HEIGHT 480
 
 #define FONT_SIZE_BASE 16
+#define TEXTURE_BASE_SIZE 1
 #define DATA_BUF_LEN 16
 #define MAX_TEXTURES 16
 
@@ -26,6 +27,7 @@ typedef struct {
     Font font;
     Font fontJP;
     u8 fontSize;
+    f32 textureScale;
     u8 menuSel;
 
     Vector subprefectures;
@@ -68,7 +70,8 @@ u8 screenProcessResize(Context *ctx);
 
 // Menu
 void menuDrawBorder(Context *ctx);
-void menuDrawSPSel(Context *ctx);
+void menuDrawSPrefSel(Context *ctx);
+void menuDrawSPrefInfo(Context *ctx);
 
 // Text
 u16 textGetRows(u8 fontSize);
