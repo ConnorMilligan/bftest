@@ -7,7 +7,7 @@
 #include <raylib.h>
 
 // Defines
-#define WINDOW_TITLE "bftest"
+#define WINDOW_TITLE "Hokkaido Map"
 #define BASE_WIDTH 640
 #define BASE_HEIGHT 480
 
